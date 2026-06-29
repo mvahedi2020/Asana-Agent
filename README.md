@@ -36,3 +36,8 @@ This project simulates an AI-powered project management assistant integrated wit
 - **Context-Aware**: The agent is pre-prompted with the context of "B2B Commerce Platform v2.0".
 - **Team Knowledge**: It knows the active team members (Alex, Sam, Jordan, Priya, Chris).
 - **Proactive Assistance**: It provides actionable PM advice and simulates realistic sprint data.
+
+## Architecture Updates (20260628_172025)
+- Introduced custom hooks for local state and debouncing.
+- Established baseline Error Boundary component.
+- Centralized shared types and utilities.
