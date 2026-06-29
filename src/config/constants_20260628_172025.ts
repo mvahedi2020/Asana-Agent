@@ -1,0 +1,11 @@
+export const APP_CONFIG = {
+  VERSION: '1.0.0',
+  API_TIMEOUT: 5000,
+  DEFAULT_LANGUAGE: 'en',
+  SUPPORTED_LOCALES: ['en', 'es', 'fr']
+};
+export const UI_CONSTANTS = {
+  SIDEBAR_WIDTH: 280,
+  HEADER_HEIGHT: 64,
+  TOAST_DURATION: 3000
+};
