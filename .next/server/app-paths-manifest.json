@@ -1,6 +1,6 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/api/chat/route": "app/api/chat/route.js",
   "/api/health_20260628_172025/route": "app/api/health_20260628_172025/route.js",
+  "/api/chat/route": "app/api/chat/route.js",
   "/page": "app/page.js"
 }

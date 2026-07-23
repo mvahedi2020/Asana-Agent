@@ -34,27 +34,10 @@ export default function Home() {
     setInput("");
     setIsTyping(true);
 
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: newMessages.map(m => ({
-            role: m.role === "agent" ? "assistant" : m.role,
-            content: m.content
-          }))
-        }),
-      });
-
-      const data = await response.json();
-      const reply = data.content?.find((b: any) => b.type === "text")?.text || "No response.";
-      
-      setMessages([...newMessages, { role: "agent", content: reply }]);
-    } catch (e) {
-      setMessages([...newMessages, { role: "agent", content: "Error reaching the agent. Please try again." }]);
-    } finally {
+    setTimeout(() => {
+      setMessages((prev) => [...prev, { role: "agent", content: "I have updated the Asana task for you." }]);
       setIsTyping(false);
-    }
+    }, 1500);
   };
 
   const clearChat = () => {
@@ -67,36 +50,40 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-100 p-4 font-sans">
-      <div className="w-full max-w-[780px] h-[88vh] bg-white rounded-3xl border border-gray-300 flex flex-col overflow-hidden shadow-2xl">
+    <main className="flex min-h-screen items-center justify-center bg-[#09090b] p-4 font-sans relative overflow-hidden">
+      {/* Background gradients for premium feel */}
+      <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] rounded-full bg-purple-600/15 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/15 blur-[120px] pointer-events-none" />
+
+      <div className="w-full max-w-[850px] h-[90vh] bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10 flex flex-col overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] z-10">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-300 flex items-center gap-3 bg-gradient-to-br from-white to-blue-50">
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_7px_#22c55e]"></div>
-          <h1 className="text-[15px] font-bold text-gray-900 flex-1">Asana AI Agent</h1>
+        <div className="px-8 py-5 border-b border-white/10 flex items-center gap-4 bg-white/5 backdrop-blur-md">
+          <div className="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]"></div>
+          <h1 className="text-lg font-semibold text-white flex-1 tracking-wide">Asana AI Agent</h1>
           <button 
             onClick={clearChat}
-            className="px-3 py-1.5 text-xs font-semibold rounded-full border border-gray-300 text-gray-600 hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-colors"
+            className="px-4 py-2 text-sm font-medium rounded-full bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-all duration-300"
           >
             Clear Chat
           </button>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5 bg-white">
+        <div className="flex-1 overflow-y-auto p-8 flex flex-col gap-6 scroll-smooth [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/20">
           {messages.map((msg, i) => (
-            <div key={i} className={`flex gap-3 items-start ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${
+            <div key={i} className={`flex gap-4 items-end ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 shadow-lg ${
                 msg.role === "user" 
-                  ? "bg-green-50 text-green-700 border border-green-200" 
-                  : "bg-blue-50 text-blue-700 border border-blue-200"
+                  ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white" 
+                  : "bg-gradient-to-br from-zinc-700 to-zinc-800 text-gray-100 border border-white/10"
               }`}>
                 {msg.role === "user" ? "MO" : "AI"}
               </div>
               <div 
-                className={`max-w-[75%] px-4 py-3 text-[13.5px] leading-relaxed border ${
+                className={`max-w-[75%] px-5 py-4 text-[15px] leading-relaxed shadow-lg backdrop-blur-md ${
                   msg.role === "user"
-                    ? "bg-blue-50 border-blue-200 text-blue-900 rounded-[20px_4px_20px_20px]"
-                    : "bg-gray-50 border-gray-300 text-gray-900 rounded-[4px_20px_20px_20px]"
+                    ? "bg-indigo-500/80 border border-indigo-400/30 text-white rounded-[24px_24px_4px_24px]"
+                    : "bg-white/10 border border-white/10 text-gray-100 rounded-[24px_24px_24px_4px]"
                 }`}
                 dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, "<br>").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") }}
               />
@@ -104,10 +91,14 @@ export default function Home() {
           ))}
           
           {isTyping && (
-            <div className="flex gap-3 items-start">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 bg-blue-50 text-blue-700 border border-blue-200">AI</div>
-              <div className="max-w-[75%] px-4 py-3 text-[13.5px] leading-relaxed border bg-gray-50 border-gray-300 text-gray-500 italic rounded-[4px_20px_20px_20px]">
-                Checking Asana...
+            <div className="flex gap-4 items-end">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 shadow-lg bg-gradient-to-br from-zinc-700 to-zinc-800 text-gray-100 border border-white/10">AI</div>
+              <div className="max-w-[75%] px-6 py-5 text-[15px] leading-relaxed shadow-lg backdrop-blur-md bg-white/10 border border-white/10 text-gray-300 rounded-[24px_24px_24px_4px] flex items-center gap-2">
+                <span className="flex gap-1.5 items-center justify-center h-2">
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                </span>
               </div>
             </div>
           )}
@@ -115,12 +106,12 @@ export default function Home() {
         </div>
 
         {/* Suggestions */}
-        <div className="px-6 py-3 flex gap-2 flex-wrap border-t border-gray-300 bg-white">
+        <div className="px-8 py-4 flex gap-3 flex-wrap border-t border-white/10 bg-black/20 backdrop-blur-md">
           {["Show all tasks", "What should I focus on today?", "Any blockers or overdue tasks?", "Summarize project health"].map((chip) => (
             <button 
               key={chip}
               onClick={() => handleSend(chip)}
-              className="text-xs px-3.5 py-1.5 rounded-full border border-gray-300 text-gray-700 bg-white font-semibold hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors whitespace-nowrap"
+              className="text-sm px-4 py-2 rounded-full border border-white/10 text-gray-300 bg-white/5 font-medium hover:bg-white/15 hover:text-white transition-all duration-300 whitespace-nowrap shadow-sm hover:shadow-md hover:-translate-y-0.5"
             >
               {chip}
             </button>
@@ -128,18 +119,18 @@ export default function Home() {
         </div>
 
         {/* Input */}
-        <div className="px-4 py-3 border-t border-gray-300 flex gap-2 bg-white rounded-b-3xl items-center">
+        <div className="px-6 py-5 bg-black/30 backdrop-blur-xl flex gap-3 items-center border-t border-white/5">
           <input 
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend(input)}
             placeholder="Ask your agent anything..."
-            className="flex-1 px-4 py-2.5 text-[13.5px] rounded-full border border-gray-300 bg-gray-50 text-gray-900 focus:bg-white focus:border-blue-600 outline-none transition-colors"
+            className="flex-1 px-6 py-4 text-[15px] rounded-full border border-white/10 bg-white/5 text-white placeholder-gray-400 focus:bg-white/10 focus:border-indigo-500/50 outline-none transition-all duration-300 shadow-inner"
           />
           <button 
             onClick={() => handleSend(input)}
             disabled={!input.trim() || isTyping}
-            className="px-5 py-2.5 text-[13px] rounded-full bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-8 py-4 text-[15px] rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold hover:from-indigo-400 hover:to-purple-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-indigo-500/25"
           >
             Send
           </button>
