@@ -39,5 +39,4 @@ If you are evaluating my portfolio and want to test the interactive UI locally, 
 > 
 > This will instantly grant you access to the core dashboard UI for evaluation purposes.
 
----
-*Maintained by Mo - Product Manager*
+
