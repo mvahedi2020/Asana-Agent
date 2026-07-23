@@ -12,7 +12,7 @@
       "static/chunks/4bd1b696-3f85a3656a7f05a4.js",
       "static/chunks/215-16dab8479430a6ac.js",
       "static/chunks/main-app-24f2ea59f3e76fc0.js",
-      "static/css/28cc5092cfac6ed4.css",
+      "static/css/16f26fed21c45e2a.css",
       "static/chunks/app/layout-24f05878ca6ea549.js"
     ],
     "/error": [
@@ -22,13 +22,6 @@
       "static/chunks/main-app-24f2ea59f3e76fc0.js",
       "static/chunks/app/error-80a7f3bc742c5951.js"
     ],
-    "/api/chat/route": [
-      "static/chunks/webpack-c7e0e789d7196ff6.js",
-      "static/chunks/4bd1b696-3f85a3656a7f05a4.js",
-      "static/chunks/215-16dab8479430a6ac.js",
-      "static/chunks/main-app-24f2ea59f3e76fc0.js",
-      "static/chunks/app/api/chat/route-dfc97f8bca34832f.js"
-    ],
     "/api/health_20260628_172025/route": [
       "static/chunks/webpack-c7e0e789d7196ff6.js",
       "static/chunks/4bd1b696-3f85a3656a7f05a4.js",
@@ -36,12 +29,19 @@
       "static/chunks/main-app-24f2ea59f3e76fc0.js",
       "static/chunks/app/api/health_20260628_172025/route-c08fde87c0a87608.js"
     ],
+    "/api/chat/route": [
+      "static/chunks/webpack-c7e0e789d7196ff6.js",
+      "static/chunks/4bd1b696-3f85a3656a7f05a4.js",
+      "static/chunks/215-16dab8479430a6ac.js",
+      "static/chunks/main-app-24f2ea59f3e76fc0.js",
+      "static/chunks/app/api/chat/route-dfc97f8bca34832f.js"
+    ],
     "/page": [
       "static/chunks/webpack-c7e0e789d7196ff6.js",
       "static/chunks/4bd1b696-3f85a3656a7f05a4.js",
       "static/chunks/215-16dab8479430a6ac.js",
       "static/chunks/main-app-24f2ea59f3e76fc0.js",
-      "static/chunks/app/page-47fa9052348337d4.js"
+      "static/chunks/app/page-d44a85129001f249.js"
     ]
   }
 }
