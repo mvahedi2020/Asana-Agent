@@ -21,7 +21,7 @@ If you are evaluating my portfolio and want to test the interactive UI locally, 
 1. Clone this repository.
 2. Install dependencies:
    ```bash
-   npm install --legacy-peer-deps
+   npm install
    ```
 
 ### Running the Demo
