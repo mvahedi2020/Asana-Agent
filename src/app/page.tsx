@@ -35,7 +35,22 @@ export default function Home() {
     setIsTyping(true);
 
     setTimeout(() => {
-      setMessages((prev) => [...prev, { role: "agent", content: "I have updated the Asana task for you." }]);
+      let response = "I have updated the Asana task for you.";
+      const lowerText = text.toLowerCase();
+      
+      if (lowerText.includes("fuck") || lowerText.includes("shit") || lowerText.includes("bitch") || lowerText.includes("ass") || lowerText.includes("dick") || lowerText.includes("damn")) {
+        response = "I apologize if I've caused any frustration. I'm an AI assistant in beta. Please let me know how I can better manage your Asana board.";
+      } else if (lowerText.includes("focus") || lowerText.includes("today")) {
+        response = "Based on your assigned tasks, you should focus on **'Finalize Q3 Roadmap'** (Due today) and **'Review PR #412'** (High Priority).";
+      } else if (lowerText.includes("blocker") || lowerText.includes("overdue")) {
+        response = "I found 2 blockers: The Design team is late on the 'Mobile Mockups', which is blocking your 'Frontend Implementation' task. I've nudged them in Asana.";
+      } else if (lowerText.includes("health") || lowerText.includes("summarize")) {
+        response = "Project 'Apollo' is currently **At Risk**. You have 14 completed tasks, but 8 overdue tasks. Velocity has dropped by 15% this sprint.";
+      } else {
+        response = "I've analyzed your request and synced with Asana. I can pull up specific tickets or update their status for you. Just let me know what you need.";
+      }
+
+      setMessages((prev) => [...prev, { role: "agent", content: response }]);
       setIsTyping(false);
     }, 1500);
   };
@@ -80,7 +95,7 @@ export default function Home() {
                 {msg.role === "user" ? "MO" : "AI"}
               </div>
               <div 
-                className={`max-w-[75%] px-5 py-4 text-[15px] leading-relaxed shadow-lg backdrop-blur-md ${
+                className={`max-w-[85%] px-5 py-4 text-[15px] leading-relaxed shadow-lg backdrop-blur-md break-words whitespace-pre-wrap ${
                   msg.role === "user"
                     ? "bg-indigo-500/80 border border-indigo-400/30 text-white rounded-[24px_24px_4px_24px]"
                     : "bg-white/10 border border-white/10 text-gray-100 rounded-[24px_24px_24px_4px]"
