@@ -1,40 +1,42 @@
 # Asana Agent
 
-**[Try the live demo](https://mvahedi2020.github.io/Asana-Agent/)** · [Watch the workflow](docs/media/workflow.webm) · [Read the case study](docs/product/Case_Study.md)
+**[Try the live sample](https://mvahedi2020.github.io/Asana-Agent/)** · [Watch the workflow](docs/media/workflow.webm) · [Read the case study](docs/product/Case_Study.md)
 
-![Asana Agent showing a fictional Northstar task workspace and conversational assistant](docs/media/screenshot.png)
+![A fictional Northstar workspace with task cards beside a plain-English conversation](docs/media/screenshot.png)
 
-An independent product sample exploring how a conversational work assistant can answer operational questions and prepare changes without hiding its evidence or impact. The sample workspace belongs to Northstar, a fictional B2B SaaS company. This project is not affiliated with Asana.
+Asana Agent is an independent product sample for a calmer way to understand and update work. A fictional product lead can ask about tasks in everyday language, then review a clear before-and-after preview before a change is made. It is not affiliated with Asana.
 
-## Scenario
+## What you can try
 
-A product lead needs to scan assigned work, due dates, blockers, and portfolio progress without assembling a status report by hand. They can ask the assistant in ordinary language, inspect answers against the visible task board, and prepare status or assignee updates. Every write, including a bulk change or reset, pauses at a concrete preview with confirm and cancel controls. The latest confirmed write can be undone.
+The sample understands these requests without requiring a task code:
 
-The assistant is intentionally deterministic. It recalculates answers from the task data currently shown in the browser, handles a narrow set of useful intents, and gives an honest boundary for anything else. No account, API, model call, authentication, or paid service is involved.
+- “What is blocked?”
+- “When is Validate admin invite flow due?”
+- “Mark Finalize onboarding checklist as done.”
+- “Assign Review trial nurture copy to Jon Bell.”
+- “Complete all tasks in review.”
+
+It also understands common status words such as **done**, **in progress**, and **reopen**, and first names such as “Maya” when assigning work. After a clear task is discussed, a follow-up such as “mark that done” works too. If more than one task could match, the guide asks which one you mean. It can explain due dates, but due-date changes are outside this sample. It never applies a change before you confirm it.
+
+The task cards also have direct Status and Owner menus. These do not change data immediately: they open the same review step as the conversation. Confirm, cancel, reset, bulk changes, and undo are all previewed. Confirmed sample changes persist in the browser and the latest one can be undone.
+
+## What this is and is not
+
+Northstar, its people, dates, tasks, and results are fictional. The assistant uses a small local sample dataset and deterministic request handling. There is no login, Asana connection, API, paid service, external AI call, customer data, research result, or production claim. Browser storage is local to the device and may be unavailable; the sample makes this visible and offers a reviewed reset.
 
 ## My role
 
-I owned the product problem, user scenario, scope, flows, safety rules, sample data, acceptance criteria, and evaluation plan. Antigravity/AI assisted with implementation. The result is a portfolio prototype for review, not evidence of production performance or autonomous product work.
-
-## Product decisions and tradeoffs
-
-1. **Visible source of truth.** The board and assistant share one local dataset, so every answer can be checked against a task ID. This improves inspectability at the cost of limiting the demo to a small sample workspace.
-2. **Confirmation before every write.** Single, bulk, and reset changes all show exact affected records before applying. This adds a step to fast workflows, but makes scope and consequence explicit; clearing chat also leaves a pending preview intact.
-3. **Narrow deterministic language support.** The prototype supports task listing, due work, blockers, briefings, summaries, and explicit status or assignee commands. It cannot handle open-ended language like a production model, but it avoids pretending that unsupported work succeeded.
-
-## Limitations
-
-Northstar, its people, dates, tasks, and outcomes are fictional. The project has no Asana integration, live data, user research findings, customer adoption, model evaluation score, or measured business impact. Browser persistence is device-local and may be unavailable; the interface warns when that happens and provides a reset. Production use would require identity, permissions, tenant isolation, audit history, integration reliability, accessibility research, and model safety evaluation.
+I owned the product problem, target user, scope, task flows, sample content, safety rules, acceptance criteria, and evaluation plan. AI assisted the implementation. This portfolio prototype should be reviewed as a product sample, not as proof of production software ownership or business impact.
 
 ## Product documentation
 
-- [Case Study](docs/product/Case_Study.md)
-- [Product Requirements](docs/product/PRD.md)
-- [GTM Strategy](docs/product/GTM_Strategy.md)
-- [Sprint Backlog](docs/product/Sprint_Backlog.md)
-- [Validation Plan](docs/product/Validation.md)
+- [Case study](docs/product/Case_Study.md)
+- [Product requirements](docs/product/PRD.md)
+- [Validation plan](docs/product/Validation.md)
+- [AI evaluation approach](docs/product/AI_Evaluation.md)
 - [Proposed measures and guardrails](docs/product/Measures.md)
-- [AI Evaluation](docs/product/AI_Evaluation.md)
-- [Contributing and technical setup](CONTRIBUTING.md)
+- [GTM strategy](docs/product/GTM_Strategy.md)
+- [Sprint backlog](docs/product/Sprint_Backlog.md)
+- [Contributing and local setup](CONTRIBUTING.md)
 
 Licensed under the [MIT License](LICENSE).

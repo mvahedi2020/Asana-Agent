@@ -1,21 +1,15 @@
-# Validation Plan
+# Validation plan
 
-## Observed software verification — September 8, 2026
+## Product workflow coverage
 
-Node 24/macOS: lint, strict type checks, five logic tests, production build and three repository Playwright tests passed. The additional headless Chrome walkthrough passed scoped queries, cancel/confirm, assignment persistence, bulk preview, clearing chat during preview, undo, unsupported requests, safe text rendering, briefing navigation and reset. Mobile at 390 × 844 had no page overflow; blocked browser storage showed a session-only warning. No page errors were captured. npm audit reported zero vulnerabilities.
+The automated checks cover plain-language status changes by title, status words inside task titles, assignment by title and owner name, a grounded “mark that done” follow-up, missing-task clarification, ambiguous-title clarification, read-only blocker requests, negated requests, mixed status-and-owner clarification, bulk completion, cancellation, confirmation, direct selectors, reviewed undo, reload persistence, unavailable or invalid storage recovery, keyboard controls, and a 390 px mobile viewport without horizontal page overflow.
 
-The first production Lighthouse run scored 91 performance and 95 accessibility under mobile simulated throttling. Identified contrast and accessible-name issues were then corrected. Actual screenshots and workflow recording are in ../media; complete reports accompany the implementation handoff. These checks are not a language-model benchmark or evidence of human usability.
+The browser review checks that the page loads with meaningful content, key controls are visible, no framework error overlay appears, and the interaction paths render their confirmation preview. Recorded workflow and screenshots are retained in `docs/media` when the capture run is requested.
 
-After removing blocking third-party font requests and correcting accessibility issues, the production-build Lighthouse recheck scored 100 performance and 100 accessibility. The repository's first GitHub verification/deployment run passed; a fresh run accompanies the final baseline.
+## What this evidence means
 
-Independent review added real calendar-date validation and preservation of incompatible saved data until an explicitly confirmed reset. Six unit tests and five repository browser tests now pass, including both recovery regressions. The full live walkthrough also passed before the final baseline update.
+These are deterministic software checks against fictional local data. They show that the described sample flows work in the tested browser; they do not measure language-model quality, customer demand, business impact, or human usability.
 
-## What is validated in the repository
+## What needs human evidence
 
-Automated logic tests verify intent routing, data-grounded blocker counts, and targeted mutations. Lint, strict TypeScript checks, and the production build verify code quality and packaging.
-
-## What still needs human evidence
-
-Run five moderated sessions with product or delivery leads using fictional work. Ask participants to find their work, identify a blocker, request a briefing, prepare a single update, and review a bulk update. Measure task success, incorrect assumptions, confirmation comprehension, recovery behavior, and confidence in what will change.
-
-Stop or redesign if participants believe an unsupported action occurred, cannot identify the affected records, or routinely confirm the wrong scope. No participant study has been run for this sample.
+A next step would be moderated sessions with product or delivery leads. Ask participants to find a blocker, ask for a due date, prepare and cancel an owner update, confirm a status change, and recover it. Observe whether people understand the sample boundary, recognize the preview, and know what will happen before confirmation. Redesign if people believe an unsupported request succeeded or cannot identify the task that will change.
