@@ -2,7 +2,7 @@
 
 ## Product workflow coverage
 
-The automated checks cover plain-language status changes by title, status words inside task titles, assignment by title and owner name, a grounded “mark that done” follow-up, missing-task clarification, ambiguous-title clarification, read-only blocker requests, negated requests, mixed status-and-owner clarification, bulk completion, cancellation, confirmation, direct selectors, reviewed undo, reload persistence, unavailable or invalid storage recovery, keyboard controls, and a 390 px mobile viewport without horizontal page overflow.
+The automated checks cover plain-language status changes by title, status words inside task titles, assignment by title and owner name, a grounded “mark that done” follow-up, missing-task clarification, ambiguous-title clarification, read-only blocker requests, negated requests, an unambiguous combined status-and-owner preview, cancellation that leaves both fields unchanged, atomic confirmation, atomic undo, bulk completion, direct selectors, reload persistence, unavailable or invalid storage recovery, keyboard controls, and a 390 px mobile viewport without horizontal page overflow.
 
 The browser review checks that the page loads with meaningful content, key controls are visible, no framework error overlay appears, and the interaction paths render their confirmation preview. Recorded workflow and screenshots are retained in `docs/media` when the capture run is requested.
 

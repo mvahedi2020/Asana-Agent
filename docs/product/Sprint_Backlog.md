@@ -14,7 +14,7 @@
 
 - Test the language and recovery behavior with product or delivery leads
 - Add filtering only after observing which views people actually need
-- Consider a multi-field preview for mixed owner-and-status requests
+- Test the combined status-and-owner preview with product or delivery leads
 - Test with keyboard-only and screen-reader participants
 - Prototype an audit-log view before considering any external integration
 
