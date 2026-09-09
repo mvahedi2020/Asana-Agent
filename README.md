@@ -32,6 +32,7 @@ I owned the product problem, target user, scope, task flows, sample content, saf
 
 - [Case study](docs/product/Case_Study.md)
 - [Product requirements](docs/product/PRD.md)
+- [Control matrix](docs/product/Control_Matrix.md)
 - [Validation plan](docs/product/Validation.md)
 - [AI evaluation approach](docs/product/AI_Evaluation.md)
 - [Proposed measures and guardrails](docs/product/Measures.md)
