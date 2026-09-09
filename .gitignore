@@ -5,3 +5,8 @@ playwright-report/
 *.tsbuildinfo
 docs/media/page@*.webm
 .DS_Store
+.env
+.env.*
+!.env.example
+.next/
+.vercel/
