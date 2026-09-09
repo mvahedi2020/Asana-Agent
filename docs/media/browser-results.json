@@ -1,0 +1,19 @@
+{
+  "url": "https://mvahedi2020.github.io/Asana-Agent/",
+  "passed": true,
+  "scenarios": [
+    "Maya query",
+    "overdue scope",
+    "cancel assignment",
+    "confirm and persist",
+    "bulk preview clear chat",
+    "undo",
+    "unsupported request",
+    "safe text",
+    "briefing",
+    "reset",
+    "mobile no overflow",
+    "storage unavailable"
+  ],
+  "errors": []
+}
