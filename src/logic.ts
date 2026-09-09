@@ -13,7 +13,7 @@ export interface Task {
 }
 
 export type Field = 'status' | 'assignee'
-export type ChangeRequest = { kind: 'change'; ids: string[]; field: Field; value: Status | Person; label: string }
+export type ChangeRequest = { kind: 'change'; ids: string[]; field: Field; value: Status | Person; secondary?: { field: Field; value: Status | Person }; label: string }
 export type AssistantResult = { type: 'reply'; text: string; contextTaskId?: string } | { type: 'change'; request: ChangeRequest; text: string; contextTaskId: string }
 
 export const SAMPLE_TODAY = '2026-09-08'
@@ -95,7 +95,11 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
   }
   if (asksToChange && directMatches.length > 1) return { type: 'reply', text: `I found more than one possible task: ${names(directMatches)}. Please name one task or use its task code so I can prepare the right change.` }
   if (asksToChange && !matched.length) return { type: 'reply', text: 'Which task should I change? Please give its title or task code. I will show the exact change before anything is updated.' }
-  if (asksToChange && assignee && requestedStatus) return { type: 'reply', text: `I can prepare one change at a time. For “${matched[0].title},” should I change the owner to ${assignee}, or change the status to ${requestedStatus}?`, contextTaskId: matched[0].id }
+  if (asksToChange && assignee && requestedStatus) {
+    const task = matched[0]
+    if (task.status === requestedStatus && task.assignee === assignee) return { type: 'reply', text: `“${task.title}” is already ${requestedStatus.toLowerCase()} and owned by ${assignee}. No change is needed.`, contextTaskId: task.id }
+    return { type: 'change', request: { kind: 'change', ids: [task.id], field: 'status', value: requestedStatus, secondary: { field: 'assignee', value: assignee }, label: `Change “${task.title}” from ${task.status} to ${requestedStatus} and change the owner from ${task.assignee} to ${assignee}` }, text: `I’m ready to update the status and owner of “${task.title}.” Review both changes below; nothing has changed yet.`, contextTaskId: task.id }
+  }
   if (asksToChange && assignee) {
     const task = matched[0]
     if (task.assignee === assignee) return { type: 'reply', text: `“${task.title}” is already owned by ${assignee}. No change is needed.`, contextTaskId: task.id }

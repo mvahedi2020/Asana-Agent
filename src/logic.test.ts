@@ -54,13 +54,16 @@ describe('plain-language workspace guide', () => {
     expect(interpretRequest('Change the due date for Finalize onboarding checklist', seedTasks).text).toContain('cannot change a due date')
   })
 
-  it('uses a reviewable bulk request and requests clarity for two fields', () => {
+  it('uses a reviewable bulk request and keeps two requested fields together', () => {
     const bulk = interpretRequest('Complete all tasks in review', seedTasks)
     expect(bulk.type).toBe('change')
     if (bulk.type === 'change') expect(bulk.request.ids).toEqual(['NTH-112'])
-    const split = interpretRequest('Assign Finalize onboarding checklist to Jon Bell and mark it done', seedTasks)
-    expect(split.type).toBe('reply')
-    expect(split.text).toContain('one change at a time')
+    const combined = interpretRequest('Assign Finalize onboarding checklist to Jon Bell and mark it done', seedTasks)
+    expect(combined.type).toBe('change')
+    if (combined.type === 'change') {
+      expect(combined.request.value).toBe('Complete')
+      expect(combined.request.secondary).toEqual({ field: 'assignee', value: 'Jon Bell' })
+    }
   })
 
   it('answers current-state questions from the given tasks', () => {

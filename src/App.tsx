@@ -70,7 +70,10 @@ function App() {
   const summary = useMemo(() => ({ open: tasks.filter((task) => task.status !== 'Complete').length, blocked: tasks.filter((task) => task.status === 'Blocked').length, done: tasks.filter((task) => task.status === 'Complete').length }), [tasks])
   const previewRows = pending ? pending.kind === 'replace'
     ? tasks.map((task) => ({ title: task.title, before: `${task.status}; ${task.assignee}`, after: `${pending.tasks.find((item) => item.id === task.id)?.status}; ${pending.tasks.find((item) => item.id === task.id)?.assignee}` }))
-    : tasks.filter((task) => pending.ids.includes(task.id)).map((task) => ({ title: task.title, before: pending.field === 'status' ? task.status : task.assignee, after: String(pending.value) })) : []
+    : tasks.filter((task) => pending.ids.includes(task.id)).map((task) => {
+      const changes = [{ field: pending.field, value: pending.value }, ...(pending.secondary ? [pending.secondary] : [])]
+      return { title: task.title, before: changes.map((change) => `${change.field === 'status' ? 'Status' : 'Owner'}: ${change.field === 'status' ? task.status : task.assignee}`).join(' · '), after: changes.map((change) => `${change.field === 'status' ? 'Status' : 'Owner'}: ${change.value}`).join(' · ') }
+    }) : []
 
   function requestMutation(mutation: Pending) {
     previousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
@@ -84,7 +87,10 @@ function App() {
     if (pending.kind === 'replace') {
       setPersistEnabled(true); setStorageWarning(false); setUndo({ tasks, label: pending.label }); setTasks(pending.tasks)
     } else {
-      setUndo({ tasks, label: pending.label }); setTasks((current) => updateTasks(current, pending.ids, pending.field, pending.value))
+      setUndo({ tasks, label: pending.label }); setTasks((current) => {
+        const primary = updateTasks(current, pending.ids, pending.field, pending.value)
+        return pending.secondary ? updateTasks(primary, pending.ids, pending.secondary.field, pending.secondary.value) : primary
+      })
     }
     addMessage('Workspace guide', `Done. ${pending.label}. You can use “Undo last change” if you need to recover it.`)
     setPending(null)

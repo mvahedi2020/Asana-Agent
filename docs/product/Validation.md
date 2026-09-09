@@ -6,6 +6,8 @@ The automated checks cover plain-language status changes by title, status words 
 
 The browser review checks that the page loads with meaningful content, key controls are visible, no framework error overlay appears, and the interaction paths render their confirmation preview. Recorded workflow and screenshots are retained in `docs/media` when the capture run is requested.
 
+A current Lighthouse run against the production preview scored 100 for performance and 100 for accessibility. The saved report is `docs/media/browser-results.json`. This is a local technical check, not a usability study.
+
 ## What this evidence means
 
 These are deterministic software checks against fictional local data. They show that the described sample flows work in the tested browser; they do not measure language-model quality, customer demand, business impact, or human usability.

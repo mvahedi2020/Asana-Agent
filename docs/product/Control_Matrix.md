@@ -23,6 +23,6 @@ This matrix describes every visible interactive control in the fictional local s
 
 ## Conversation boundaries
 
-The guide supports readable task titles or task codes, the visible owner names and first names, common status words, blockers, due dates, task lists, briefings, summaries, and the visible bulk action. It can use a previously clear task for “it” or “that.” If more than one task could match, no task is named, or a request includes both an owner and status update, it asks a plain-language follow-up instead of choosing or dropping a change.
+The guide supports readable task titles or task codes, the visible owner names and first names, common status words, blockers, due dates, task lists, briefings, summaries, and the visible bulk action. It can use a previously clear task for “it” or “that.” If more than one task could match or no task is named, it asks a plain-language follow-up instead of choosing a task. A clear status-and-owner request for one task stays together in one reviewable preview, so no requested field is dropped.
 
 Due-date updates, external workspaces, and unsupported requests are plainly declined. Read-only questions do not open a confirmation dialog.

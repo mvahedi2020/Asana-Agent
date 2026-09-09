@@ -49,6 +49,25 @@ test('makes direct status and owner controls explicit, reviewable, and undoable'
   await expect(owner).toHaveValue('Jon Bell')
 })
 
+test('keeps an unambiguous combined request together in one preview and undo', async ({ page }) => {
+  const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
+  await input.fill('Put the review trial nurture copy task in progress and assign it to Jon')
+  await page.getByRole('button', { name: 'Send' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Review this change' })
+  await expect(dialog).toContainText('Review trial nurture copy')
+  await expect(dialog).toContainText('Status: In review')
+  await expect(dialog).toContainText('Status: In progress')
+  await expect(dialog).toContainText('Owner: Priya Shah')
+  await expect(dialog).toContainText('Owner: Jon Bell')
+  await dialog.getByRole('button', { name: 'Confirm change' }).click()
+  await expect(page.getByLabel('Status for Review trial nurture copy')).toHaveValue('In progress')
+  await expect(page.getByLabel('Owner for Review trial nurture copy')).toHaveValue('Jon Bell')
+  await page.getByRole('button', { name: 'Undo last change' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Confirm change' }).click()
+  await expect(page.getByLabel('Status for Review trial nurture copy')).toHaveValue('In review')
+  await expect(page.getByLabel('Owner for Review trial nurture copy')).toHaveValue('Priya Shah')
+})
+
 test('handles bulk, unsupported, clear chat, and cancelled preview safely', async ({ page }) => {
   await page.getByRole('button', { name: 'Complete tasks in review' }).click()
   await expect(page.getByRole('dialog')).toContainText('Review trial nurture copy')
