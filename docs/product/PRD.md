@@ -1,8 +1,21 @@
 # Product requirements: conversational task workspace
 
-## Problem and goal
+## Product brief
 
-A product or delivery lead needs to understand current work and prepare routine updates without translating every intent into a specialist interface. The goal is a transparent, local sample where the conversation and visible task records stay in sync.
+**User:** A product or delivery lead who needs to understand current work and prepare routine updates.
+
+**Problem:** A task system can make simple coordination slow when people must translate an everyday request into rigid controls. A conversational layer can reduce that friction, but it must not hide which record will change or take action without review.
+
+**Goal:** Create a transparent, local sample where the conversation and visible task records stay in sync, and every proposed change can be checked before it is applied. This is a fictional prototype, not a claim of customer demand, model performance, or production impact.
+
+## Product principles and scope
+
+1. **Ground the conversation in visible records.** Responses use the task data already shown in the workspace and lead with readable task titles.
+2. **Make changes reviewable.** A status, owner, bulk, reset, or undo operation must show its affected records and before-and-after values, then require confirmation.
+3. **Prefer safe uncertainty.** The workspace asks a clarifying question for an unclear task and treats negation as a reason not to prepare a change.
+4. **Keep the claim bounded.** The sample uses deterministic local handling and fictional Northstar data; it does not imply an Asana connection or external AI capability.
+
+The first release favors clarity and recoverability over broad automation. It excludes authentication, permissions, notifications, due-date editing, live integrations, and open-ended language-model behavior. Those are valuable future questions, but they would require different privacy, reliability, and evaluation controls.
 
 ## Required behavior
 

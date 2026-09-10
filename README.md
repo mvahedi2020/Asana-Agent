@@ -1,6 +1,8 @@
-# Asana Agent
+# Asana Agent — Product Management Case Study
 
-**[Try the live sample](https://mvahedi2020.github.io/Asana-Agent/)** · [Watch the workflow](docs/media/workflow.webm) · [Read the case study](docs/product/Case_Study.md)
+This B2B SaaS product case study explores a narrow question: can a conversational task workspace make routine coordination easier while keeping the record and any proposed change clear? I defined the user problem, safety boundaries, requirements, fictional sample data, and evaluation plan; the interactive prototype makes those choices easy to inspect.
+
+**Start here:** [Read the case study](docs/product/Case_Study.md) · [Review the PRD](docs/product/PRD.md) · [See the AI evaluation approach](docs/product/AI_Evaluation.md) · [Try the live sample](https://mvahedi2020.github.io/Asana-Agent/) · [Watch the workflow](docs/media/workflow.webm)
 
 ![A fictional Northstar workspace with task cards beside a plain-English conversation](docs/media/screenshot.png)
 
@@ -24,11 +26,13 @@ The task cards also have direct Status and Owner menus. These do not change data
 
 Northstar, its people, dates, tasks, and results are fictional. The assistant uses a small local sample dataset and deterministic request handling. There is no login, Asana connection, API, paid service, external AI call, customer data, research result, or production claim. Browser storage is local to the device and may be unavailable; the sample makes this visible and offers a reviewed reset.
 
-## My role
+## My role as Product Manager
 
-I owned the product problem, target user, scope, task flows, sample content, safety rules, acceptance criteria, and evaluation plan. AI assisted the implementation. This portfolio prototype should be reviewed as a product sample, not as proof of production software ownership or business impact.
+I defined the problem framing, target user, prioritization, scope, task workflows, fictional sample content, safety rules, acceptance criteria, and evaluation plan. The central product decision is deliberate: conversation may propose a change, but the person must see the affected task and before-and-after values before it is applied. I excluded live integrations and open-ended AI to keep that promise testable in the sample.
 
-## Product documentation
+Google Antigravity and other AI tools assisted with implementation and verification. This portfolio prototype should be reviewed as a product sample, not as proof that I owned production software or produced business impact.
+
+## Review the product work
 
 - [Case study](docs/product/Case_Study.md)
 - [Product requirements](docs/product/PRD.md)

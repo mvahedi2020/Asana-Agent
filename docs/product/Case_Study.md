@@ -20,4 +20,4 @@ The latest confirmed change can be recovered through Undo, which is itself previ
 
 Northstar, its people, tasks, dates, and outcomes are fictional. The sample has no Asana connection, customer account, API, login, external AI, paid service, customer research, model score, adoption result, or production claim.
 
-PM ownership included problem framing, target user, scope, interaction design, safety rules, sample content, acceptance criteria, and verification plan. AI assisted with implementation.
+I defined the problem framing, target user, scope, interaction design, safety rules, sample content, acceptance criteria, and verification plan. Google Antigravity and other AI tools assisted with implementation and verification.
