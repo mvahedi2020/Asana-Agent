@@ -36,3 +36,9 @@ This sample has no authentication, Asana or other task-system integration, API, 
 ## Acceptance criteria
 
 Every supplied capability example works as written. A read request does not open a change preview. A negated change does not prepare an opposite update. A change never applies before confirmation, including bulk, reset, and undo. Task-title replies lead with readable titles rather than task codes. Saved state survives reload when storage is available, and an invalid saved state does not crash or get overwritten without a confirmed reset.
+
+## Concrete Northstar acceptance examples
+
+In the fictional Northstar board, “Mark Finalize onboarding checklist as done” prepares a preview for NTH-104 that names the task and shows **In progress → Complete**. Confirm applies that task update; Cancel leaves the task unchanged. “Assign Review trial nurture copy to Jon Bell” similarly previews **Priya Shah → Jon Bell** before confirmation. “Complete all tasks in review” must show every affected readable task before it can proceed. A request for blockers or a due date answers from the visible local data and opens no change preview.
+
+When a request could name more than one task, the workspace asks the person to identify one task or code instead of selecting a guess. “Do not mark this done” creates no update. Direct Status and Owner controls use the same proposal path as conversation. Reset and Undo each show their own before-and-after preview and require confirmation because they modify task state. **Clear chat** only removes local conversation messages; it does not update, reset, undo, or otherwise change any task and therefore is outside the task-change confirmation contract. These examples are prototype acceptance behavior for fictional data, not a claim about a connected Asana product.
