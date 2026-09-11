@@ -2,7 +2,7 @@
 
 This B2B SaaS product case study explores a narrow question: can a conversational task workspace make routine coordination easier while keeping the record and any proposed change clear? I defined the user problem, safety boundaries, requirements, fictional sample data, and evaluation plan; the interactive prototype makes those choices easy to inspect.
 
-**Start here:** [Read the case study](docs/product/Case_Study.md) · [Review the PRD](docs/product/PRD.md) · [See the AI evaluation approach](docs/product/AI_Evaluation.md) · [Try the live sample](https://mvahedi2020.github.io/Asana-Agent/) · [Watch the workflow](docs/media/workflow.webm)
+**Reviewer route:** [Case study](docs/product/Case_Study.md) → [PRD and acceptance examples](docs/product/PRD.md) → [product decisions](docs/product/Product_Decisions.md) → [discovery and scoring plan](docs/product/Discovery_Plan.md) → [risks and prioritized investment](docs/product/Product_Risks.md). You can also [see the AI evaluation approach](docs/product/AI_Evaluation.md), [try the live sample](https://mvahedi2020.github.io/Asana-Agent/), or [watch the workflow](docs/media/workflow.webm).
 
 ![A fictional Northstar workspace with task cards beside a plain-English conversation](docs/media/screenshot.png)
 
@@ -28,7 +28,7 @@ Northstar, its people, dates, tasks, and results are fictional. The assistant us
 
 ## My role as Product Manager
 
-I defined the problem framing, target user, prioritization, scope, task workflows, fictional sample content, safety rules, acceptance criteria, and evaluation plan. The central product decision is deliberate: conversation may propose a change, but the person must see the affected task and before-and-after values before it is applied. I excluded live integrations and open-ended AI to keep that promise testable in the sample.
+I defined the problem framing, target user, prioritization, scope, task workflows, fictional sample content, safety rules, acceptance criteria, and evaluation plan. The central product decision is deliberate: conversation may propose a change, but the person must see the affected task and before-and-after values before it is applied. I excluded live integrations and open-ended AI to keep that promise testable in the sample. This represents Product Manager ownership of the product work; I did not manually author the application code.
 
 Google Antigravity and other AI tools assisted with implementation and verification. This portfolio prototype should be reviewed as a product sample, not as proof that I owned production software or produced business impact.
 
