@@ -30,7 +30,7 @@ Northstar, its people, dates, tasks, and results are fictional. The assistant us
 
 I defined the problem framing, target user, prioritization, scope, task workflows, fictional sample content, safety rules, acceptance criteria, and evaluation plan. The central product decision is deliberate: conversation may propose a change, but the person must see the affected task and before-and-after values before it is applied. I excluded live integrations and open-ended AI to keep that promise testable in the sample. This represents Product Manager ownership of the product work; I did not manually author the application code.
 
-Google Antigravity and other AI tools assisted with implementation and verification. This portfolio prototype should be reviewed as a product sample, not as proof that I owned production software or produced business impact.
+AI tools assisted with implementation and verification. This portfolio prototype should be reviewed as a product sample, not as proof that I owned production software or produced business impact.
 
 ## Review the product work
 
