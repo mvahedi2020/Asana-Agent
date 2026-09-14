@@ -17,6 +17,16 @@
 
 The first release favors clarity and recoverability over broad automation. It excludes authentication, permissions, notifications, due-date editing, live integrations, and open-ended language-model behavior. Those are valuable future questions, but they would require different privacy, reliability, and evaluation controls.
 
+## What the prototype enforces
+
+| Behavior | Enforced now | Recommended product practice |
+|---|---|---|
+| Read requests | Grounded replies use visible fictional tasks and do not open a change preview. | Check the named task and sample-date boundary before acting on a reply. |
+| Task changes | Supported status and owner changes create a preview with title and before-and-after values. | Treat the preview as the decision point, not the conversation message. |
+| Ambiguity and negation | Multiple or missing matches prompt for a task; negated changes create no proposal. | Resolve ambiguity explicitly rather than rephrasing it as a guessed update. |
+| Bulk, reset, and Undo | Every affected task is previewed and requires confirm or cancel. | Review the displayed scope before confirmation. |
+| Local persistence | Confirmed valid sample state persists where browser storage works. | Do not infer collaboration, audit history, or a connected system. |
+
 ## Required behavior
 
 1. Show fictional tasks with a title, task code, project, status, owner, due date, priority, and blocker when relevant.
