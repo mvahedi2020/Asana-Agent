@@ -15,3 +15,7 @@ Confirmation adds an interaction to routine updates, ambiguity prompts can inter
 ## Evidence and next investment
 
 Technical checks establish that documented local flows ran; they do not establish human trust, usability, demand, model quality, or business impact. No participant study has occurred. The next investment is a five-participant comparison with each person’s current task workflow. Expand only if participants independently identify the affected task, distinguish a proposal from a confirmed update, and recover a deliberate change without a critical action-boundary error. [The walkthrough](Sample%20Walkthrough.md), [PRD](PRD.md), [decisions](Product_Decisions.md), and [validation plan](Validation.md) make that product case reviewable.
+
+## My role as Product Manager
+
+I defined the problem, prioritization and scope, workflows, fictional sample data, acceptance criteria, and evaluation plan. AI tools assisted with implementation and verification; I do not claim manual authorship of the application code.

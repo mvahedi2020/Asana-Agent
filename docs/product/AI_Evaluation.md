@@ -1,21 +1,34 @@
-# AI Evaluation
+# Evaluating a reviewable task assistant
 
-Although the sample is deterministic, it models evaluation requirements for a future language-model implementation.
+This sample uses deterministic local request handling, not a language model. The PM evaluation question is whether an assistant identifies the right work, communicates its limits, and keeps a proposed change separate from an applied change. The cases below define expected behavior; they are not model scores or user-study results.
 
-## Evaluation set
+## Small, inspectable case set
 
-Create versioned cases for each supported read intent, paraphrases, multi-intent prompts, missing task IDs, ambiguous owners, single updates, bulk updates, prompt-injection text inside task names, and explicitly unsupported requests. Include state-changing sequences so answers are checked after mutations.
+Start each independent case from the original fictional task board. Record the fixture version, input, expected records, actual response type, proposed fields, state before confirmation, and resulting state. Keep conversational sequences together rather than scoring each message without its context.
 
-## Measures
+| Case | Input or sequence | Expected boundary |
+|---|---|---|
+| Grounded read | “What is blocked?” | Identify Instrument workspace-created event (NTH-108) and Summarize churn interviews (NTH-119); no change proposal. |
+| Due-date read | “When is Validate admin invite flow due?” | Report the sample due date Sep 11 for NTH-115; do not imply live task-system access. |
+| Single proposal | “Mark Finalize onboarding checklist as done” | Preview NTH-104 from In progress to Complete; the board stays unchanged until confirmation. |
+| Combined proposal | “Put the review trial nurture copy task in progress and assign it to Jon” | One review shows NTH-112 from In review/Priya Shah to In progress/Jon Bell; cancel changes neither field. |
+| Context follow-up | Ask when NTH-115 is due, then “Mark that done” | The proposal targets NTH-115; the same pronoun without established context must ask for a task. |
+| Explicit negation | “Do not mark Finalize onboarding checklist done” | Reply without preparing a mutation; do not interpret negation as an opposite action. |
+| Unsupported field | “Change the due date for Finalize onboarding checklist” | Explain that due-date changes are outside the sample; no proposal or write. |
+| Recovery sequence | Confirm the combined proposal, request Undo, then confirm Undo | Both changed fields return to their prior values. Cancelling Undo instead preserves the confirmed change. |
 
-- Grounded record precision and recall
-- Numeric accuracy for counts and dates
-- Mutation target, field, and value accuracy
-- Confirmation coverage: 100% of proposed writes must require review
-- Unsupported-request honesty
-- Safe handling of untrusted task and user text
-- Undo success and state consistency
+These scenarios are grounded in the existing fixture and controls. For an ambiguity test, use a separately labeled fixture variant with a similar task title; do not pretend the public board already contains that extra task. Existing logic and browser tests cover parts of this set. A complete evaluation needs a recorded result for every case and variant, including failures.
 
-## Release gates
+## Score quality and safety separately
 
-No critical unsafe mutation, tenant crossover, invented record, or confirmation bypass is acceptable. Human review is required for edge cases and failure quality. The current repository does not report model scores because no model is used and no evaluation run has occurred.
+For read cases, record returned and expected record sets. Precision is correct returned records divided by all returned records; recall is correct returned records divided by all expected records. Mark an empty denominator as not applicable and separately score the correctness of the empty-result explanation. Check dates and counts exactly against the fixture.
+
+For proposals, score target IDs, fields, and values together. A correct status on the wrong task fails. Confirmation coverage is reviewed task-write proposals divided by all task-write proposals, including bulk and undo. Unsupported or negated requests that produce a proposal are failures even if the user never confirms them. Count unintended applied mutations separately; a high read score cannot offset one.
+
+Clear chat affects the transcript, so it is not a task-write denominator entry. Storage recovery and reset should be evaluated as their own state-management sequences.
+
+## Before considering an external model
+
+A future model evaluation would add paraphrases, contradictory instructions, untrusted text inside records, and ambiguous owners. Keep development examples separate from a held-out evaluation set and report results by failure type. Repeat nondeterministic cases and disclose the run count rather than selecting the best response.
+
+The proposed release decision blocks expansion on any unintended mutation, invented record, or confirmation bypass. Tenant isolation and permissions would require separate production requirements; this single-browser prototype does not implement them. Human comprehension and coordination-time hypotheses belong in [Measures](Measures.md) and [Validation](Validation.md), not in an offline model score.
