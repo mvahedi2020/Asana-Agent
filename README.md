@@ -2,7 +2,7 @@
 
 This B2B SaaS product case study explores a narrow question: can a conversational task workspace make routine coordination easier while keeping the record and any proposed change clear? I defined the user problem, safety boundaries, requirements, fictional sample data, and evaluation plan; the interactive prototype makes those choices easy to inspect.
 
-**Reviewer route:** [Case study](docs/product/Case_Study.md) → [PRD and acceptance examples](docs/product/PRD.md) → [product decisions](docs/product/Product_Decisions.md) → [discovery and scoring plan](docs/product/Discovery_Plan.md) → [risks and prioritized investment](docs/product/Product_Risks.md). You can also [see the AI evaluation approach](docs/product/AI_Evaluation.md), [try the live sample](https://mvahedi2020.github.io/Asana-Agent/), or [watch the workflow](docs/media/workflow.webm).
+**Reviewer route:** [Decision brief](docs/product/Case_Study.md) → [sample walkthrough](docs/product/Sample%20Walkthrough.md) → [PRD and acceptance examples](docs/product/PRD.md) → [measures and validation](docs/product/Measures.md) → [product decisions](docs/product/Product_Decisions.md). You can also [see the AI evaluation approach](docs/product/AI_Evaluation.md), [try the live sample](https://mvahedi2020.github.io/Asana-Agent/), or [watch the workflow](docs/media/workflow.webm).
 
 ![A fictional Northstar workspace with task cards beside a plain-English conversation](docs/media/screenshot.png)
 
@@ -35,6 +35,7 @@ AI tools assisted with implementation and verification. This portfolio prototype
 ## Review the product work
 
 - [Case study](docs/product/Case_Study.md)
+- [Public sample walkthrough](docs/product/Sample%20Walkthrough.md)
 - [Product requirements](docs/product/PRD.md)
 - [Control matrix](docs/product/Control_Matrix.md)
 - [Validation plan](docs/product/Validation.md)
