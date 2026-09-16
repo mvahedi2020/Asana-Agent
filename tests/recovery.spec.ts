@@ -19,4 +19,5 @@ test('invalid stored dates recover to the sample without a render crash', async 
   await page.goto('./')
   await expect(page.getByRole('heading', { name: 'A calmer way to move work forward.' })).toBeVisible()
   await expect(page.getByRole('status')).toContainText('could not be read')
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('northstar.asana-agent.v1')!).tasks[0].due)).toBe('2026-99-99')
 })
