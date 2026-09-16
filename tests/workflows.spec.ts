@@ -87,7 +87,9 @@ test('handles bulk, unsupported, clear chat, and cancelled preview safely', asyn
   await page.getByRole('dialog').getByRole('button', { name: 'Clear chat' }).click()
   await expect(page.getByText('Your conversation is clear.')).toBeVisible()
   await expect(page.getByRole('dialog')).toContainText('Review trial nurture copy')
+  await expect(page.getByLabel('Owner for Review trial nurture copy')).toHaveValue('Priya Shah')
   await page.keyboard.press('Escape')
+  await expect(page.getByLabel('Owner for Review trial nurture copy')).toHaveValue('Priya Shah')
 })
 
 test('keeps controls usable without horizontal overflow on a mobile viewport', async ({ page }) => {
