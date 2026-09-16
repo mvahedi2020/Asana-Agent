@@ -26,3 +26,7 @@ This matrix describes every visible interactive control in the fictional local s
 The guide supports readable task titles or task codes, the visible owner names and first names, common status words, blockers, due dates, task lists, briefings, summaries, and the visible bulk action. It can use a previously clear task for “it” or “that.” If more than one task could match or no task is named, it asks a plain-language follow-up instead of choosing a task. A clear status-and-owner request for one task stays together in one reviewable preview, so no requested field is dropped.
 
 Due-date updates, external workspaces, and unsupported requests are plainly declined. Read-only questions do not open a confirmation dialog.
+
+## One review contract across entry points
+
+The conversation and the task-card selectors are different ways to prepare the same kind of task change. For example, either route can prepare NTH-112’s owner change, but neither route writes it before the preview identifies **Review trial nurture copy**, the old owner, and the proposed owner. Confirmation creates the local change and the Undo option; Cancel and Escape preserve the task. Clear chat has no role in that sequence because it changes only the transcript. This makes the recovery contract inspectable without implying an Asana integration or shared audit history.
