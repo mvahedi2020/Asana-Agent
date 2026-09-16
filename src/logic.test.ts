@@ -78,4 +78,11 @@ describe('plain-language workspace guide', () => {
     expect(isTask({ ...seedTasks[0], due: 'soon' })).toBe(false)
     expect(isTask({ ...seedTasks[0], due: '2026-02-30' })).toBe(false)
   })
+
+  it('keeps the walkthrough tasks grounded in the Northstar fixture', () => {
+    const byId = (id: string) => seedTasks.find((task) => task.id === id)!
+    expect(byId('NTH-104')).toMatchObject({ title: 'Finalize onboarding checklist', status: 'In progress', assignee: 'Maya Chen' })
+    expect(byId('NTH-112')).toMatchObject({ title: 'Review trial nurture copy', status: 'In review', assignee: 'Priya Shah' })
+    expect(byId('NTH-115')).toMatchObject({ title: 'Validate admin invite flow', status: 'Planned', due: '2026-09-11' })
+  })
 })
