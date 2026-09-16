@@ -18,6 +18,10 @@ This record explains the tradeoffs in the fictional prototype. It does not claim
 
 **Alternatives considered:** server-backed history, no persistence, or local state with reviewed reset and undo. **Chosen compromise:** persist confirmed sample state when available and preview undo and reset. **Cost:** no collaboration, audit record, permissions, or cross-device continuity. **Reconsider when:** validated workflows require a shared record and access, privacy, reliability, and support controls are defined.
 
+## Clearing the conversation does not cancel a proposal
+
+**Alternatives considered:** make Clear chat dismiss an open proposal, block Clear chat during review, or clear only messages while leaving the proposal visible. **Chosen compromise:** Clear chat removes transient conversation context but keeps the prepared review open. **Cost:** a person must choose Cancel or Confirm explicitly. **Why:** a task proposal is decision state, not chat history; coupling them could make an unrelated cleanup appear to cancel or alter NTH-112. **Reconsider when:** consented sessions show people cannot distinguish the two controls; test clearer labels or placement before changing the action boundary.
+
 ## Decision reversal rules
 
 | Choice | Reverse only when evidence says | What changes first |
@@ -26,3 +30,4 @@ This record explains the tradeoffs in the fictional prototype. It does not claim
 | Deterministic handling | Participants identify a repeated high-value request that the limited set cannot support safely. | Specify the request, error states, and confirmation contract before expanding coverage. |
 | Clarification over guessing | Participants cannot resolve ambiguity with the prompt or a clear selection proves safer. | Test an explicit disambiguation display; do not silently rank a match. |
 | Browser-local recovery | A validated workflow requires a shared record or durable history. | Define access, privacy, reliability, retention, and support requirements before integration. |
+| Clear chat preserves proposal | Participants expect Clear chat to cancel, or cannot locate Cancel after using it. | Test clearer transient-state language and control placement without making chat cleanup mutate task state. |
