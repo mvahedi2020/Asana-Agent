@@ -41,6 +41,11 @@ describe('plain-language workspace guide', () => {
     expect(result.text).toContain('Which task')
   })
 
+  it('does not silently choose between conflicting requested values', () => {
+    expect(interpretRequest('Mark Finalize onboarding checklist done and in review', seedTasks).text).toContain('more than one requested status')
+    expect(interpretRequest('Assign Finalize onboarding checklist to Maya or Jon', seedTasks).text).toContain('more than one possible owner')
+  })
+
   it('asks for clarification when a partial title matches more than one task', () => {
     const similar = [...seedTasks, { ...seedTasks[0], id: 'NTH-999', title: 'Finalize onboarding survey' }]
     const result = interpretRequest('Mark finalize onboarding done', similar)

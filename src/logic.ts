@@ -65,6 +65,17 @@ function statusFrom(input: string): Status | undefined {
   return undefined
 }
 
+function statusesFrom(input: string): Status[] {
+  const value = input.toLowerCase()
+  return [
+    /\b(done|complete|completed|finish|finished|close|closed)\b/.test(value) && 'Complete',
+    /\b(reopen|reopened|resume|resumed|in progress|in-progress|working on|started|start)\b/.test(value) && 'In progress',
+    /\b(blocked|block|stuck)\b/.test(value) && 'Blocked',
+    /\b(in review|review)\b/.test(value) && 'In review',
+    /\b(planned|plan|backlog)\b/.test(value) && 'Planned',
+  ].filter((status): status is Status => Boolean(status))
+}
+
 function personFrom(input: string): Person | undefined {
   const value = input.toLowerCase()
   const byFullName = people.find((person) => value.includes(person.toLowerCase()))
@@ -74,6 +85,12 @@ function personFrom(input: string): Person | undefined {
   if (/\bpriya\b/.test(value)) return 'Priya Shah'
   if (/\bunassigned\b/.test(value)) return 'Unassigned'
   return undefined
+}
+function peopleFrom(input: string): Person[] {
+  const value = input.toLowerCase()
+  return people.filter((person) => person === 'Unassigned'
+    ? /\bunassigned\b/.test(value)
+    : value.includes(person.toLowerCase()) || new RegExp(`\\b${person.split(' ')[0].toLowerCase()}\\b`).test(value))
 }
 function changeVerb(input: string) { return /\b(assign|give|make|set|change|move|mark|put|update|reopen|resume|finish|complete|close|start)\b/.test(input.toLowerCase()) }
 function names(tasks: Task[]) { return tasks.map((task) => `“${task.title}”`).join(', ') }
@@ -94,6 +111,8 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
     if (!inReview.length) return { type: 'reply', text: 'There are no tasks in review right now, so there is nothing to complete.' }
     return { type: 'change', request: { kind: 'change', ids: inReview.map((task) => task.id), field: 'status', value: 'Complete', label: `Mark ${inReview.length} task${inReview.length === 1 ? '' : 's'} in review as complete` }, text: `I prepared a change for ${inReview.length} task${inReview.length === 1 ? '' : 's'} in review. Review every affected task before confirming.`, contextTaskId: inReview[0].id }
   }
+  if (asksToChange && statusesFrom(textOutsideTaskTitles).length > 1) return { type: 'reply', text: 'I found more than one requested status. Please choose one status so I can prepare a clear change.' }
+  if (asksToChange && peopleFrom(input).length > 1) return { type: 'reply', text: 'I found more than one possible owner. Please choose one owner so I can prepare a clear change.' }
   if (asksToChange && directMatches.length > 1) return { type: 'reply', text: `I found more than one possible task: ${names(directMatches)}. Please name one task or use its task code so I can prepare the right change.` }
   if (asksToChange && !matched.length) return { type: 'reply', text: 'Which task should I change? Please give its title or task code. I will show the exact change before anything is updated.' }
   if (asksToChange && assignee && requestedStatus) {
