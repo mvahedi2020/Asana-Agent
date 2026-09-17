@@ -149,6 +149,11 @@ export function isTask(value: unknown): value is Task {
   return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === task.due && typeof task.id === 'string' && typeof task.title === 'string' && typeof task.project === 'string' && statuses.includes(task.status as Status) && people.includes(task.assignee as Person) && ['High', 'Medium', 'Low'].includes(task.priority ?? '') && (task.blocker === undefined || typeof task.blocker === 'string')
 }
 
+export function isTaskList(value: unknown): value is Task[] {
+  if (!Array.isArray(value) || !value.length || !value.every(isTask)) return false
+  return new Set(value.map((task) => task.id)).size === value.length
+}
+
 export function updateTasks(tasks: Task[], ids: string[], field: Field, value: Status | Person): Task[] {
   return tasks.map((task) => ids.includes(task.id) ? { ...task, [field]: value } : task)
 }

@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
-import { ChangeRequest, isTask, interpretRequest, people, seedTasks, Status, statuses, Task, updateTasks } from './logic'
+import { ChangeRequest, isTaskList, interpretRequest, people, seedTasks, Status, statuses, Task, updateTasks } from './logic'
 
 const STORAGE_KEY = 'northstar.asana-agent.v1'
 type Page = 'board' | 'briefing' | 'case-study'
@@ -13,7 +13,7 @@ function initialTasks(): { tasks: Task[]; warning: boolean; preserve?: boolean }
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return { tasks: seedTasks, warning: false }
     const parsed = JSON.parse(raw) as { version: number; tasks: Task[] }
-    if (parsed.version !== 1 || !Array.isArray(parsed.tasks) || !parsed.tasks.length || !parsed.tasks.every(isTask)) return { tasks: seedTasks, warning: true, preserve: true }
+    if (parsed.version !== 1 || !isTaskList(parsed.tasks)) return { tasks: seedTasks, warning: true, preserve: true }
     return { tasks: parsed.tasks, warning: false }
   } catch { return { tasks: seedTasks, warning: true, preserve: true } }
 }
