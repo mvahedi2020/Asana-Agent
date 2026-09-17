@@ -35,6 +35,7 @@ const date = (value: string) => new Intl.DateTimeFormat('en-US', { month: 'short
 const quoted = (input: string) => [...input.matchAll(/["“]([^"”]+)["”]/g)].map((match) => match[1].toLowerCase())
 const words = (input: string) => input.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).filter((word) => word.length > 2 && !stopWords.has(word))
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const nonEmptyText = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0
 
 export function findTasks(input: string, tasks: Task[]): Task[] {
   const lower = input.toLowerCase()
@@ -171,7 +172,7 @@ export function isTask(value: unknown): value is Task {
   const task = value as Partial<Task>
   if (typeof task.due !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(task.due)) return false
   const parsed = new Date(`${task.due}T00:00:00Z`)
-  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === task.due && typeof task.id === 'string' && typeof task.title === 'string' && typeof task.project === 'string' && statuses.includes(task.status as Status) && people.includes(task.assignee as Person) && ['High', 'Medium', 'Low'].includes(task.priority ?? '') && (task.blocker === undefined || typeof task.blocker === 'string')
+  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === task.due && nonEmptyText(task.id) && nonEmptyText(task.title) && nonEmptyText(task.project) && statuses.includes(task.status as Status) && people.includes(task.assignee as Person) && ['High', 'Medium', 'Low'].includes(task.priority ?? '') && (task.blocker === undefined || typeof task.blocker === 'string')
 }
 
 export function isTaskList(value: unknown): value is Task[] {
