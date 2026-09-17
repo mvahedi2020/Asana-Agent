@@ -33,10 +33,11 @@ const stopWords = new Set(['a', 'an', 'the', 'to', 'for', 'of', 'on', 'in', 'at'
 const date = (value: string) => new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`))
 const quoted = (input: string) => [...input.matchAll(/["“]([^"”]+)["”]/g)].map((match) => match[1].toLowerCase())
 const words = (input: string) => input.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).filter((word) => word.length > 2 && !stopWords.has(word))
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 export function findTasks(input: string, tasks: Task[]): Task[] {
   const lower = input.toLowerCase()
-  const byId = tasks.filter((task) => new RegExp(`\\b${task.id.toLowerCase()}\\b`, 'i').test(lower))
+  const byId = tasks.filter((task) => new RegExp(`\\b${escapeRegExp(task.id.toLowerCase())}\\b`, 'i').test(lower))
   if (byId.length) return byId
   const exactTitles = tasks.filter((task) => quoted(input).some((title) => task.title.toLowerCase().includes(title) || title.includes(task.title.toLowerCase())))
   if (exactTitles.length) return exactTitles
@@ -83,7 +84,7 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
   const usesPronoun = /\b(it|that|this one)\b/.test(lower)
   const matched = directMatches.length ? directMatches : usesPronoun && contextTaskId ? tasks.filter((task) => task.id === contextTaskId) : []
   const assignee = personFrom(input)
-  const textOutsideTaskTitles = tasks.reduce((text, task) => text.replace(new RegExp(task.title, 'ig'), ''), input)
+  const textOutsideTaskTitles = tasks.reduce((text, task) => text.replace(new RegExp(escapeRegExp(task.title), 'ig'), ''), input)
   const requestedStatus = statusFrom(textOutsideTaskTitles)
   const asksToChange = changeVerb(input) && Boolean(assignee || requestedStatus)
 

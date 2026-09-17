@@ -48,6 +48,13 @@ describe('plain-language workspace guide', () => {
     expect(result.text).toContain('more than one')
   })
 
+  it('keeps matching safe when a saved task contains regular-expression characters', () => {
+    const savedTask = { ...seedTasks[0], id: 'NTH.104', title: 'Review [migration] checklist' }
+    const result = interpretRequest('Mark "Review [migration] checklist" done', [savedTask])
+    expect(result.type).toBe('change')
+    if (result.type === 'change') expect(result.request.ids).toEqual(['NTH.104'])
+  })
+
   it('treats reads and negated changes as safe replies', () => {
     expect(interpretRequest('Show blocked tasks', seedTasks).type).toBe('reply')
     expect(interpretRequest('Do not mark Finalize onboarding checklist done', seedTasks).type).toBe('reply')
