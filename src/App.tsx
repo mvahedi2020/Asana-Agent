@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
-import { ChangeRequest, isTaskList, interpretRequest, people, seedTasks, Status, statuses, Task, updateTasks } from './logic'
+import { ChangeRequest, isTaskList, interpretRequest, people, seedTasks, Status, statuses, Task, tasksDueThisSampleWeek, updateTasks } from './logic'
 
 const STORAGE_KEY = 'northstar.asana-agent.v1'
 type Page = 'board' | 'briefing' | 'case-study'
@@ -154,7 +154,7 @@ function TaskCard({ task, onChange }: { task: Task; onChange: (task: Task, field
 }
 
 function Briefing({ tasks, onRun }: { tasks: Task[]; onRun: (query: string) => void }) {
-  const due = tasks.filter((task) => task.status !== 'Complete' && task.due <= '2026-09-14').sort((a, b) => a.due.localeCompare(b.due))
+  const due = tasksDueThisSampleWeek(tasks)
   const blocked = tasks.filter((task) => task.status === 'Blocked')
   return <section className="briefing-page"><p className="eyebrow">SAMPLE WEEKLY VIEW</p><h1>What needs attention this week</h1><p className="lede">This view reads the same fictional tasks as the workspace. It changes after you confirm a task update.</p><div className="brief-grid"><article><span className="big-number">{due.length}</span><h2>Due by Sep 14</h2><ul>{due.map((task) => <li key={task.id}><b>{task.title}</b><span>Due {formatDue(task.due)}</span></li>)}</ul></article><article className="dark-card"><span className="big-number">{blocked.length}</span><h2>Need help</h2>{blocked.length ? <ul>{blocked.map((task) => <li key={task.id}><b>{task.title}</b><span>{task.blocker}</span></li>)}</ul> : <div className="brief-empty">Nothing is blocked.</div>}</article></div><button className="primary" onClick={() => { onRun('Give me a team briefing'); window.location.hash = 'board' }}>Discuss this briefing</button></section>
 }

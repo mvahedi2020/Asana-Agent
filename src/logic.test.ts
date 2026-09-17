@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { interpretRequest, isTask, seedTasks, updateTasks } from './logic'
+import { interpretRequest, isTask, seedTasks, tasksDueThisSampleWeek, updateTasks } from './logic'
 
 describe('plain-language workspace guide', () => {
   it('prepares a status change from a task title and an everyday status word', () => {
@@ -83,6 +83,11 @@ describe('plain-language workspace guide', () => {
     expect(interpretRequest('What is blocked?', seedTasks).text).toContain('2')
     expect(interpretRequest('What is blocked?', changed).text).toContain('Summarize churn interviews')
     expect(interpretRequest('When is NTH-104 due?', seedTasks).text).toContain('Sep 8')
+  })
+
+  it('uses one fixed weekly horizon for the workspace and assistant', () => {
+    expect(tasksDueThisSampleWeek(seedTasks).map((task) => task.id)).toEqual(['NTH-119', 'NTH-104', 'NTH-108', 'NTH-112', 'NTH-115'])
+    expect(interpretRequest('What is due this week?', seedTasks).text).toContain('Due by Sep 14')
   })
 
   it('rejects malformed persisted records', () => {

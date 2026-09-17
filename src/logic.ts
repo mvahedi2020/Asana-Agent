@@ -17,6 +17,7 @@ export type ChangeRequest = { kind: 'change'; ids: string[]; field: Field; value
 export type AssistantResult = { type: 'reply'; text: string; contextTaskId?: string } | { type: 'change'; request: ChangeRequest; text: string; contextTaskId: string }
 
 export const SAMPLE_TODAY = '2026-09-08'
+export const SAMPLE_WEEK_END = '2026-09-14'
 export const people: Person[] = ['Maya Chen', 'Jon Bell', 'Priya Shah', 'Unassigned']
 export const statuses: Status[] = ['Planned', 'In progress', 'Blocked', 'In review', 'Complete']
 
@@ -52,6 +53,10 @@ export function findTasks(input: string, tasks: Task[]): Task[] {
 export function readTaskList(tasks: Task[]): string {
   if (!tasks.length) return 'There are no matching tasks in this sample workspace.'
   return tasks.map((task) => `${task.title} — ${task.status}, owned by ${task.assignee}, due ${date(task.due)}.`).join(' ')
+}
+
+export function tasksDueThisSampleWeek(tasks: Task[]): Task[] {
+  return tasks.filter((task) => task.status !== 'Complete' && task.due <= SAMPLE_WEEK_END).sort((a, b) => a.due.localeCompare(b.due))
 }
 
 function statusFrom(input: string): Status | undefined {
@@ -147,7 +152,7 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
   if (/\b(my tasks|assigned to me|maya.?s tasks|maya.?s work)\b/.test(lower)) return { type: 'reply', text: `Maya has: ${readTaskList(tasks.filter((task) => task.assignee === 'Maya Chen' && task.status !== 'Complete'))}` }
   if (/\b(overdue|past due)\b/.test(lower)) return { type: 'reply', text: `Using the sample date Sep 8, overdue work is: ${readTaskList(tasks.filter((task) => task.status !== 'Complete' && task.due < SAMPLE_TODAY))}` }
   if (/\b(today|due today)\b/.test(lower)) return { type: 'reply', text: `Using the sample date Sep 8, due today: ${readTaskList(tasks.filter((task) => task.status !== 'Complete' && task.due === SAMPLE_TODAY))}` }
-  if (/\b(this week|week|due)\b/.test(lower)) return { type: 'reply', text: `Due by Sep 14: ${readTaskList(tasks.filter((task) => task.status !== 'Complete' && task.due <= '2026-09-14').sort((a, b) => a.due.localeCompare(b.due)))}` }
+  if (/\b(this week|week|due)\b/.test(lower)) return { type: 'reply', text: `Due by Sep 14: ${readTaskList(tasksDueThisSampleWeek(tasks))}` }
   if (/\b(briefing|standup|morning)\b/.test(lower)) {
     const active = tasks.filter((task) => task.status !== 'Complete')
     const blocked = tasks.filter((task) => task.status === 'Blocked')
