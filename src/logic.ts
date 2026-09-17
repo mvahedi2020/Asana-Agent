@@ -59,24 +59,24 @@ export function tasksDueThisSampleWeek(tasks: Task[]): Task[] {
   return tasks.filter((task) => task.status !== 'Complete' && task.due <= SAMPLE_WEEK_END).sort((a, b) => a.due.localeCompare(b.due))
 }
 
-function statusFrom(input: string): Status | undefined {
+function statusFrom(input: string, allowStandaloneReview = true): Status | undefined {
   const value = input.toLowerCase()
   if (/\b(done|complete|completed|finish|finished|close|closed)\b/.test(value)) return 'Complete'
   if (/\b(reopen|reopened|resume|resumed)\b/.test(value)) return 'In progress'
   if (/\b(in progress|in-progress|working on|started|start)\b/.test(value)) return 'In progress'
   if (/\b(blocked|block|stuck)\b/.test(value)) return 'Blocked'
-  if (/\b(in review|review)\b/.test(value)) return 'In review'
+  if (/\bin review\b/.test(value) || allowStandaloneReview && /\breview\b/.test(value)) return 'In review'
   if (/\b(planned|plan|backlog)\b/.test(value)) return 'Planned'
   return undefined
 }
 
-function statusesFrom(input: string): Status[] {
+function statusesFrom(input: string, allowStandaloneReview = true): Status[] {
   const value = input.toLowerCase()
   return [
     /\b(done|complete|completed|finish|finished|close|closed)\b/.test(value) && 'Complete',
     /\b(reopen|reopened|resume|resumed|in progress|in-progress|working on|started|start)\b/.test(value) && 'In progress',
     /\b(blocked|block|stuck)\b/.test(value) && 'Blocked',
-    /\b(in review|review)\b/.test(value) && 'In review',
+    (/\bin review\b/.test(value) || allowStandaloneReview && /\breview\b/.test(value)) && 'In review',
     /\b(planned|plan|backlog)\b/.test(value) && 'Planned',
   ].filter((status): status is Status => Boolean(status))
 }
@@ -107,7 +107,8 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
   const matched = directMatches.length ? directMatches : usesPronoun && contextTaskId ? tasks.filter((task) => task.id === contextTaskId) : []
   const assignee = personFrom(input)
   const textOutsideTaskTitles = tasks.reduce((text, task) => text.replace(new RegExp(escapeRegExp(task.title), 'ig'), ''), input)
-  const requestedStatus = statusFrom(textOutsideTaskTitles)
+  const allowStandaloneReview = !directMatches.some((task) => /\breview\b/i.test(task.title))
+  const requestedStatus = statusFrom(textOutsideTaskTitles, allowStandaloneReview)
   const asksToChange = changeVerb(input) && Boolean(assignee || requestedStatus)
 
   if (/\b(do not|don't|dont|not)\b/.test(lower) && asksToChange) return { type: 'reply', text: 'I will not prepare that change. If you want to make an update, tell me the task, the status or owner you want, and I will show it for review first.' }
@@ -116,7 +117,7 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
     if (!inReview.length) return { type: 'reply', text: 'There are no tasks in review right now, so there is nothing to complete.' }
     return { type: 'change', request: { kind: 'change', ids: inReview.map((task) => task.id), field: 'status', value: 'Complete', label: `Mark ${inReview.length} task${inReview.length === 1 ? '' : 's'} in review as complete` }, text: `I prepared a change for ${inReview.length} task${inReview.length === 1 ? '' : 's'} in review. Review every affected task before confirming.`, contextTaskId: inReview[0].id }
   }
-  if (asksToChange && statusesFrom(textOutsideTaskTitles).length > 1) return { type: 'reply', text: 'I found more than one requested status. Please choose one status so I can prepare a clear change.' }
+  if (asksToChange && statusesFrom(textOutsideTaskTitles, allowStandaloneReview).length > 1) return { type: 'reply', text: 'I found more than one requested status. Please choose one status so I can prepare a clear change.' }
   if (asksToChange && peopleFrom(input).length > 1) return { type: 'reply', text: 'I found more than one possible owner. Please choose one owner so I can prepare a clear change.' }
   if (asksToChange && directMatches.length > 1) return { type: 'reply', text: `I found more than one possible task: ${names(directMatches)}. Please name one task or use its task code so I can prepare the right change.` }
   if (asksToChange && !matched.length) return { type: 'reply', text: 'Which task should I change? Please give its title or task code. I will show the exact change before anything is updated.' }

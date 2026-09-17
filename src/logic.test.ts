@@ -14,6 +14,12 @@ describe('plain-language workspace guide', () => {
     if (result.type === 'change') expect(result.request.value).toBe('Complete')
   })
 
+  it('keeps a partial review-title match from creating a second status', () => {
+    const result = interpretRequest('Mark review nurture copy done', seedTasks)
+    expect(result.type).toBe('change')
+    if (result.type === 'change') expect(result.request.value).toBe('Complete')
+  })
+
   it('prepares assignment from a task title and a person name', () => {
     const result = interpretRequest('Assign Review trial nurture copy to Jon Bell', seedTasks)
     expect(result.type).toBe('change')
