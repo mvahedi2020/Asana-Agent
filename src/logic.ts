@@ -172,7 +172,9 @@ export function isTask(value: unknown): value is Task {
   const task = value as Partial<Task>
   if (typeof task.due !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(task.due)) return false
   const parsed = new Date(`${task.due}T00:00:00Z`)
-  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === task.due && nonEmptyText(task.id) && nonEmptyText(task.title) && nonEmptyText(task.project) && statuses.includes(task.status as Status) && people.includes(task.assignee as Person) && ['High', 'Medium', 'Low'].includes(task.priority ?? '') && (task.blocker === undefined || typeof task.blocker === 'string')
+  const blockerIsUsable = task.blocker === undefined || nonEmptyText(task.blocker)
+  const blockedWorkHasReason = task.status !== 'Blocked' || nonEmptyText(task.blocker)
+  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === task.due && nonEmptyText(task.id) && nonEmptyText(task.title) && nonEmptyText(task.project) && statuses.includes(task.status as Status) && people.includes(task.assignee as Person) && ['High', 'Medium', 'Low'].includes(task.priority ?? '') && blockerIsUsable && blockedWorkHasReason
 }
 
 export function isTaskList(value: unknown): value is Task[] {

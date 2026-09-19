@@ -4,3 +4,4 @@ it('rejects impossible calendar dates in saved records',()=>{for(const due of ['
 it('rejects duplicate task ids in a saved workspace',()=>{expect(isTaskList(seedTasks)).toBe(true);expect(isTaskList([seedTasks[0],{...seedTasks[1],id:seedTasks[0].id}])).toBe(false);});
 it('rejects duplicate task ids that differ only by case or surrounding space',()=>{expect(isTaskList([seedTasks[0],{...seedTasks[1],id:` ${seedTasks[0].id.toLowerCase()} `}])).toBe(false);});
 it('rejects saved tasks without a usable identity or display context',()=>{for(const patch of [{id:' '},{title:''},{project:'  '}])expect(isTask({...seedTasks[0],...patch})).toBe(false);});
+it('requires a visible reason for blocked saved work',()=>{expect(isTask({...seedTasks[0],status:'Blocked',blocker:undefined})).toBe(false);expect(isTask({...seedTasks[0],status:'Blocked',blocker:'  '})).toBe(false);expect(isTask({...seedTasks[0],status:'Blocked',blocker:'Waiting on approval'})).toBe(true);});
