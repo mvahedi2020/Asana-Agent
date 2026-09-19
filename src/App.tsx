@@ -100,7 +100,7 @@ function App() {
     const result = interpretRequest(text, tasks, contextTaskId)
     addMessage('You', text)
     addMessage('Workspace guide', result.text)
-    if (result.contextTaskId) setContextTaskId(result.contextTaskId)
+    setContextTaskId(result.contextTaskId)
     if (result.type === 'change') requestMutation(result.request)
   }
 

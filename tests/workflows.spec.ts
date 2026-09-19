@@ -32,6 +32,19 @@ test('supports a grounded conversational follow-up and asks before changing', as
   await expect(page.getByLabel('Status for Validate admin invite flow')).toHaveValue('Planned')
 })
 
+test('expires task context after a board-wide answer', async ({ page }) => {
+  const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
+  await input.fill('When is Validate admin invite flow due?')
+  await page.getByRole('button', { name: 'Send' }).click()
+  await input.fill('What is blocked?')
+  await page.getByRole('button', { name: 'Send' }).click()
+  await input.fill('Mark that done')
+  await page.getByRole('button', { name: 'Send' }).click()
+  await expect(page.getByText(/Which task should I update/)).toBeVisible()
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await expect(page.getByLabel('Status for Validate admin invite flow')).toHaveValue('Planned')
+})
+
 test('makes direct status and owner controls explicit, reviewable, and undoable', async ({ page }) => {
   const status = page.getByLabel('Status for Instrument workspace-created event')
   await status.selectOption('In review')
