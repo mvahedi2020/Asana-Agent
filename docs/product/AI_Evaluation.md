@@ -13,6 +13,7 @@ Start each independent case from the original fictional task board. Record the f
 | Single proposal | “Mark Finalize onboarding checklist as done” | Preview NTH-104 from In progress to Complete; the board stays unchanged until confirmation. |
 | Combined proposal | “Put the review trial nurture copy task in progress and assign it to Jon” | One review shows NTH-112 from In review/Priya Shah to In progress/Jon Bell; cancel changes neither field. |
 | Context follow-up | Ask when NTH-115 is due, then “Mark that done” | The proposal targets NTH-115; the same pronoun without established context must ask for a task. |
+| Expired context | Ask when NTH-115 is due, ask “What is blocked?”, then say “Mark that done” | The board-wide blocker answer expires NTH-115 context; ask which task rather than preparing a proposal. |
 | Explicit negation | “Do not mark Finalize onboarding checklist done” | Reply without preparing a mutation; do not interpret negation as an opposite action. |
 | Unsupported field | “Change the due date for Finalize onboarding checklist” | Explain that due-date changes are outside the sample; no proposal or write. |
 | Recovery sequence | Confirm the combined proposal, request Undo, then confirm Undo | Both changed fields return to their prior values. Cancelling Undo instead preserves the confirmed change. |
@@ -23,7 +24,7 @@ These scenarios are grounded in the existing fixture and controls. For an ambigu
 
 For read cases, record returned and expected record sets. Precision is correct returned records divided by all returned records; recall is correct returned records divided by all expected records. Mark an empty denominator as not applicable and separately score the correctness of the empty-result explanation. Check dates and counts exactly against the fixture.
 
-For proposals, score target IDs, fields, and values together. A correct status on the wrong task fails. Confirmation coverage is reviewed task-write proposals divided by all task-write proposals, including bulk and undo. Unsupported or negated requests that produce a proposal are failures even if the user never confirms them. Count unintended applied mutations separately; a high read score cannot offset one.
+For proposals, score target IDs, fields, and values together. The visible review must pair the stable task code with its readable title; a correct status on the wrong task fails. Confirmation coverage is reviewed task-write proposals divided by all task-write proposals, including bulk and undo. Unsupported or negated requests that produce a proposal are failures even if the user never confirms them. Count unintended applied mutations separately; a high read score cannot offset one.
 
 Clear chat affects the transcript, so it is not a task-write denominator entry. Storage recovery and reset should be evaluated as their own state-management sequences.
 
