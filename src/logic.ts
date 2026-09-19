@@ -177,7 +177,7 @@ export function isTask(value: unknown): value is Task {
 
 export function isTaskList(value: unknown): value is Task[] {
   if (!Array.isArray(value) || !value.length || !value.every(isTask)) return false
-  return new Set(value.map((task) => task.id)).size === value.length
+  return new Set(value.map((task) => task.id.trim().toLowerCase())).size === value.length
 }
 
 export function updateTasks(tasks: Task[], ids: string[], field: Field, value: Status | Person): Task[] {
