@@ -10,6 +10,7 @@ test('understands a task title, previews the human-readable change, confirms, an
   await page.getByRole('textbox', { name: 'Ask about the sample work' }).fill('Mark Finalize onboarding checklist as done')
   await page.getByRole('button', { name: 'Send' }).click()
   const dialog = page.getByRole('dialog', { name: 'Review this change' })
+  await expect(dialog).toContainText('NTH-104 · Finalize onboarding checklist')
   await expect(dialog).toContainText('Finalize onboarding checklist')
   await expect(dialog).toContainText('In progress')
   await expect(dialog).toContainText('Complete')
