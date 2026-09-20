@@ -90,7 +90,7 @@ function App() {
   function confirmMutation() {
     if (!pending) return
     if (pending.kind === 'replace') {
-      setPersistEnabled(true); setStorageWarning(false); setUndo({ tasks, label: pending.label }); setTasks(pending.tasks)
+      setPersistEnabled(true); setStorageWarning(false); setUndo({ tasks, label: pending.label }); setTasks(pending.tasks); setContextTaskId(undefined)
     } else {
       setUndo({ tasks, label: pending.label }); setTasks((current) => {
         const primary = updateTasks(current, pending.ids, pending.field, pending.value)

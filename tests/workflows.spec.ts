@@ -57,6 +57,18 @@ test('clears hidden task context with the conversation', async ({ page }) => {
   await expect(page.getByRole('dialog')).toHaveCount(0)
 })
 
+test('expires task context when a reset replaces board state', async ({ page }) => {
+  const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
+  await input.fill('When is Validate admin invite flow due?')
+  await page.getByRole('button', { name: 'Send' }).click()
+  await page.getByRole('button', { name: 'Reset sample' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Confirm change' }).click()
+  await input.fill('Mark that done')
+  await page.getByRole('button', { name: 'Send' }).click()
+  await expect(page.getByText(/Which task should I change/)).toBeVisible()
+  await expect(page.getByLabel('Status for Validate admin invite flow')).toHaveValue('Planned')
+})
+
 test('makes direct status and owner controls explicit, reviewable, and undoable', async ({ page }) => {
   const status = page.getByLabel('Status for Instrument workspace-created event')
   await status.selectOption('In review')
