@@ -69,7 +69,13 @@ function App() {
 
   const summary = useMemo(() => ({ open: tasks.filter((task) => task.status !== 'Complete').length, blocked: tasks.filter((task) => task.status === 'Blocked').length, done: tasks.filter((task) => task.status === 'Complete').length }), [tasks])
   const previewRows = pending ? pending.kind === 'replace'
-    ? tasks.map((task) => ({ id: task.id, title: task.title, before: `${task.status}; ${task.assignee}`, after: `${pending.tasks.find((item) => item.id === task.id)?.status}; ${pending.tasks.find((item) => item.id === task.id)?.assignee}` }))
+    ? tasks.flatMap((task) => {
+      const replacement = pending.tasks.find((item) => item.id === task.id)
+      if (!replacement) return []
+      const before = `${task.status}; ${task.assignee}`
+      const after = `${replacement.status}; ${replacement.assignee}`
+      return before === after ? [] : [{ id: task.id, title: task.title, before, after }]
+    })
     : tasks.filter((task) => pending.ids.includes(task.id)).map((task) => {
       const changes = [{ field: pending.field, value: pending.value }, ...(pending.secondary ? [pending.secondary] : [])]
       return { id: task.id, title: task.title, before: changes.map((change) => `${change.field === 'status' ? 'Status' : 'Owner'}: ${change.field === 'status' ? task.status : task.assignee}`).join(' · '), after: changes.map((change) => `${change.field === 'status' ? 'Status' : 'Owner'}: ${change.value}`).join(' · ') }
@@ -150,7 +156,7 @@ function App() {
       {page === 'case-study' && <CaseStudy />}
     </main>
     <footer><span>Northstar, its people, and its tasks are fictional. Changes stay in this browser.</span><a href="#case-study">How this sample works</a></footer>
-    {pending && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setPending(null) }}><div className="dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title" ref={dialogRef}><p className="eyebrow">ONE LAST LOOK</p><h2 id="confirm-title">Review this change</h2><p>{pending.label}</p><div className="preview-list">{previewRows.map((row) => <div className="preview-row" key={row.id}><strong>{row.id} · {row.title}</strong><span><s>{row.before}</s><b>{row.after}</b></span></div>)}</div><p className="dialog-note">This only changes the fictional tasks saved in this browser. You can undo after confirming. Clearing chat leaves this proposal open.</p><div className="dialog-actions"><button className="quiet-button" onClick={clearConversation}>Clear chat</button><button className="secondary" onClick={() => setPending(null)}>Cancel</button><button className="primary" onClick={confirmMutation}>Confirm change</button></div></div></div>}
+    {pending && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setPending(null) }}><div className="dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title" ref={dialogRef}><p className="eyebrow">ONE LAST LOOK</p><h2 id="confirm-title">Review this change</h2><p>{pending.label}</p><div className="preview-list">{previewRows.length ? previewRows.map((row) => <div className="preview-row" key={row.id}><strong>{row.id} · {row.title}</strong><span><s>{row.before}</s><b>{row.after}</b></span></div>) : <p className="dialog-note">No visible task values differ. Confirming still replaces incompatible saved browser data when a recovery warning is shown.</p>}</div><p className="dialog-note">This only changes the fictional tasks saved in this browser. You can undo after confirming. Clearing chat leaves this proposal open.</p><div className="dialog-actions"><button className="quiet-button" onClick={clearConversation}>Clear chat</button><button className="secondary" onClick={() => setPending(null)}>Cancel</button><button className="primary" onClick={confirmMutation}>Confirm change</button></div></div></div>}
   </div>
 }
 
