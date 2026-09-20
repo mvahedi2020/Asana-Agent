@@ -122,6 +122,7 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
   if (asksToChange && peopleFrom(input).length > 1) return { type: 'reply', text: 'I found more than one possible owner. Please choose one owner so I can prepare a clear change.' }
   if (asksToChange && directMatches.length > 1) return { type: 'reply', text: `I found more than one possible task: ${names(directMatches)}. Please name one task or use its task code so I can prepare the right change.` }
   if (asksToChange && !matched.length) return { type: 'reply', text: 'Which task should I change? Please give its title or task code. I will show the exact change before anything is updated.' }
+  if (asksToChange && requestedStatus === 'Blocked' && !matched[0].blocker?.trim()) return { type: 'reply', text: `“${matched[0].title}” has no blocker reason in this sample. Add a reviewable blocker reason before changing its status to Blocked; no change has been prepared.`, contextTaskId: matched[0].id }
   if (asksToChange && assignee && requestedStatus) {
     const task = matched[0]
     if (task.status === requestedStatus && task.assignee === assignee) return { type: 'reply', text: `“${task.title}” is already ${requestedStatus.toLowerCase()} and owned by ${assignee}. No change is needed.`, contextTaskId: task.id }

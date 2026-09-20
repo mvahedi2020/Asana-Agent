@@ -34,6 +34,14 @@ describe('plain-language workspace guide', () => {
     if (followUp.type === 'change') expect(followUp.request.ids).toEqual(['NTH-115'])
   })
 
+  it('requires a visible blocker reason before proposing blocked status', () => {
+    const missingReason = interpretRequest('Mark Finalize onboarding checklist blocked', seedTasks)
+    expect(missingReason.type).toBe('reply')
+    expect(missingReason.text).toContain('no blocker reason')
+    const unblocked = updateTasks(seedTasks, ['NTH-108'], 'status', 'In progress')
+    expect(interpretRequest('Mark Instrument workspace-created event blocked', unblocked).type).toBe('change')
+  })
+
   it('accepts a first name in an owner follow-up', () => {
     const first = interpretRequest('When is Review trial nurture copy due?', seedTasks)
     const followUp = interpretRequest('Assign it to Maya', seedTasks, first.contextTaskId)
