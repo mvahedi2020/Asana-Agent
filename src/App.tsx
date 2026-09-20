@@ -82,6 +82,11 @@ function App() {
 
   function addMessage(role: Message['role'], text: string) { setMessages((current) => [...current, { id: Date.now() + Math.random(), role, text }]) }
 
+  function clearConversation() {
+    setMessages([])
+    setContextTaskId(undefined)
+  }
+
   function confirmMutation() {
     if (!pending) return
     if (pending.kind === 'replace') {
@@ -132,7 +137,7 @@ function App() {
             <div className="bulk-row"><div><span>Ready to wrap up?</span><p>Review every affected task before confirming a group change.</p></div><button onClick={() => runQuery('Complete all tasks in review')} disabled={!tasks.some((task) => task.status === 'In review')}>Complete tasks in review</button></div>
           </section>
           <aside className="agent-panel" aria-labelledby="agent-title">
-            <div className="agent-heading"><span className="agent-orb" aria-hidden="true">✦</span><div><p className="eyebrow">WORKSPACE GUIDE</p><h2 id="agent-title">Talk it through</h2></div><button className="clear-button" onClick={() => setMessages([])}>Clear chat</button></div>
+            <div className="agent-heading"><span className="agent-orb" aria-hidden="true">✦</span><div><p className="eyebrow">WORKSPACE GUIDE</p><h2 id="agent-title">Talk it through</h2></div><button className="clear-button" onClick={clearConversation}>Clear chat</button></div>
             <div className="capability-note"><strong>What I can do here</strong><span>Find work, explain blockers and due dates, or prepare a status or owner change in this sample board.</span></div>
             <div className="suggestions" aria-label="Try one of these examples">{['What is blocked?', 'When is Validate admin invite flow due?', 'Mark Finalize onboarding checklist as done', 'Assign Review trial nurture copy to Jon Bell', 'Complete all tasks in review'].map((question) => <button key={question} onClick={() => runQuery(question)}>{question}</button>)}</div>
             <div className="conversation" aria-live="polite">{messages.length === 0 ? <div className="empty"><span>✦</span><p>Your conversation is clear.</p><small>Your tasks and any open change preview are still here.</small></div> : messages.map((message) => <div key={message.id} className={`message ${message.role === 'You' ? 'user' : 'agent'}`}><b>{message.role}</b><p>{message.text}</p></div>)}</div>
@@ -145,7 +150,7 @@ function App() {
       {page === 'case-study' && <CaseStudy />}
     </main>
     <footer><span>Northstar, its people, and its tasks are fictional. Changes stay in this browser.</span><a href="#case-study">How this sample works</a></footer>
-    {pending && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setPending(null) }}><div className="dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title" ref={dialogRef}><p className="eyebrow">ONE LAST LOOK</p><h2 id="confirm-title">Review this change</h2><p>{pending.label}</p><div className="preview-list">{previewRows.map((row) => <div className="preview-row" key={row.id}><strong>{row.id} · {row.title}</strong><span><s>{row.before}</s><b>{row.after}</b></span></div>)}</div><p className="dialog-note">This only changes the fictional tasks saved in this browser. You can undo after confirming. Clearing chat leaves this proposal open.</p><div className="dialog-actions"><button className="quiet-button" onClick={() => setMessages([])}>Clear chat</button><button className="secondary" onClick={() => setPending(null)}>Cancel</button><button className="primary" onClick={confirmMutation}>Confirm change</button></div></div></div>}
+    {pending && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setPending(null) }}><div className="dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title" ref={dialogRef}><p className="eyebrow">ONE LAST LOOK</p><h2 id="confirm-title">Review this change</h2><p>{pending.label}</p><div className="preview-list">{previewRows.map((row) => <div className="preview-row" key={row.id}><strong>{row.id} · {row.title}</strong><span><s>{row.before}</s><b>{row.after}</b></span></div>)}</div><p className="dialog-note">This only changes the fictional tasks saved in this browser. You can undo after confirming. Clearing chat leaves this proposal open.</p><div className="dialog-actions"><button className="quiet-button" onClick={clearConversation}>Clear chat</button><button className="secondary" onClick={() => setPending(null)}>Cancel</button><button className="primary" onClick={confirmMutation}>Confirm change</button></div></div></div>}
   </div>
 }
 
