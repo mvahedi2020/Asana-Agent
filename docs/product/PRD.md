@@ -38,6 +38,8 @@ The first release favors clarity and recoverability over broad automation. It ex
 7. Show each affected task’s code, readable title, and before-and-after value before any single, bulk, reset, or undo change. Require confirm or cancel.
 8. Keep saved state in local browser storage; warn without overwriting incompatible storage; reset only after confirmation; provide a reviewed undo.
 9. Work with keyboard controls and a narrow mobile viewport.
+10. Require a nonblank blocker reason before offering **Blocked** as a new status. A task that already carries a blocker reason may leave and later return to Blocked because the reason remains visible in its record.
+11. Clear single-task conversational context when the transcript is cleared or a reset/undo replaces the board. Replacement previews list only records whose visible status or owner will change; if no visible values differ, the review says why confirmation may still matter for incompatible saved data.
 
 ## Non-goals
 
@@ -46,6 +48,8 @@ This sample has no authentication, Asana or other task-system integration, API, 
 ## Acceptance criteria
 
 Every supplied capability example works as written. A read request does not open a change preview. A negated change does not prepare an opposite update. A change never applies before confirmation, including bulk, reset, and undo. Task-title replies lead with readable titles; change previews pair those titles with stable task codes. A pronoun can reuse the immediately established single-task context, but an intervening board-wide answer expires it. Saved state survives reload when storage is available, and an invalid saved state does not crash or get overwritten without a confirmed reset.
+
+A request to mark NTH-104 Blocked is rejected because that fixture has no blocker reason; the direct selector communicates the same constraint. Clearing chat or confirming a board replacement makes a later “Mark that done” ask for a task again. Resetting an unchanged valid board shows no task-difference rows, while still explaining that a confirmed reset is the explicit recovery action for incompatible saved data.
 
 ## Concrete Northstar acceptance examples
 
