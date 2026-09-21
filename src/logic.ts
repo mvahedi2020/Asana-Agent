@@ -19,6 +19,11 @@ export type PreviewRow = { id: string; title: string; before: string; after: str
 
 export const SAMPLE_TODAY = '2026-09-08'
 export const SAMPLE_WEEK_END = '2026-09-14'
+export const MAX_SAVED_TASKS = 50
+export const MAX_TASK_ID_LENGTH = 40
+export const MAX_TASK_TITLE_LENGTH = 160
+export const MAX_PROJECT_LENGTH = 80
+export const MAX_BLOCKER_LENGTH = 500
 export const people: Person[] = ['Maya Chen', 'Jon Bell', 'Priya Shah', 'Unassigned']
 export const statuses: Status[] = ['Planned', 'In progress', 'Blocked', 'In review', 'Complete']
 
@@ -37,6 +42,7 @@ const quoted = (input: string) => [...input.matchAll(/["“]([^"”]+)["”]/g)]
 const words = (input: string) => input.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).filter((word) => word.length > 2 && !stopWords.has(word))
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const nonEmptyText = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0
+const boundedText = (value: unknown, maximum: number): value is string => nonEmptyText(value) && value.length <= maximum
 
 export function findTasks(input: string, tasks: Task[]): Task[] {
   const lower = input.toLowerCase()
@@ -199,13 +205,13 @@ export function isTask(value: unknown): value is Task {
   const task = value as Partial<Task>
   if (typeof task.due !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(task.due)) return false
   const parsed = new Date(`${task.due}T00:00:00Z`)
-  const blockerIsUsable = task.blocker === undefined || nonEmptyText(task.blocker)
-  const blockedWorkHasReason = task.status !== 'Blocked' || nonEmptyText(task.blocker)
-  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === task.due && nonEmptyText(task.id) && nonEmptyText(task.title) && nonEmptyText(task.project) && statuses.includes(task.status as Status) && people.includes(task.assignee as Person) && ['High', 'Medium', 'Low'].includes(task.priority ?? '') && blockerIsUsable && blockedWorkHasReason
+  const blockerIsUsable = task.blocker === undefined || boundedText(task.blocker, MAX_BLOCKER_LENGTH)
+  const blockedWorkHasReason = task.status !== 'Blocked' || boundedText(task.blocker, MAX_BLOCKER_LENGTH)
+  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === task.due && boundedText(task.id, MAX_TASK_ID_LENGTH) && boundedText(task.title, MAX_TASK_TITLE_LENGTH) && boundedText(task.project, MAX_PROJECT_LENGTH) && statuses.includes(task.status as Status) && people.includes(task.assignee as Person) && ['High', 'Medium', 'Low'].includes(task.priority ?? '') && blockerIsUsable && blockedWorkHasReason
 }
 
 export function isTaskList(value: unknown): value is Task[] {
-  if (!Array.isArray(value) || !value.length || !value.every(isTask)) return false
+  if (!Array.isArray(value) || !value.length || value.length > MAX_SAVED_TASKS || !value.every(isTask)) return false
   return new Set(value.map((task) => task.id.trim().toLowerCase())).size === value.length
 }
 

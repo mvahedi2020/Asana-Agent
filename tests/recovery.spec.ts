@@ -33,3 +33,11 @@ test('reset preview identifies tasks added to and removed from the board', async
   await expect(dialog).toContainText('NTH-121 · Ship role template empty state')
   await expect(dialog).toContainText('Record added by this replacement')
 })
+
+test('preserves an oversized saved board for explicit recovery', async ({ page }) => {
+  const tasks = Array.from({ length: 51 }, (_, index) => ({ ...seedTasks[0], id: `NTH-${index}` }))
+  await page.addInitScript((saved) => localStorage.setItem('northstar.asana-agent.v1', JSON.stringify({ version: 1, tasks: saved })), tasks)
+  await page.goto('./')
+  await expect(page.getByRole('status')).toContainText('original saved data is untouched')
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('northstar.asana-agent.v1')!).tasks.length)).toBe(51)
+})

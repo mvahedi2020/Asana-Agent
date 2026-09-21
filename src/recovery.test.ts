@@ -1,7 +1,9 @@
 import {it,expect} from 'vitest';
-import {isTask,isTaskList,seedTasks} from './logic';
+import {isTask,isTaskList,MAX_BLOCKER_LENGTH,MAX_PROJECT_LENGTH,MAX_SAVED_TASKS,MAX_TASK_ID_LENGTH,MAX_TASK_TITLE_LENGTH,seedTasks} from './logic';
 it('rejects impossible calendar dates in saved records',()=>{for(const due of ['2026-99-99','2026-02-30','invalid'])expect(isTask({...seedTasks[0],due})).toBe(false);expect(isTask({...seedTasks[0],due:'2028-02-29'})).toBe(true);});
 it('rejects duplicate task ids in a saved workspace',()=>{expect(isTaskList(seedTasks)).toBe(true);expect(isTaskList([seedTasks[0],{...seedTasks[1],id:seedTasks[0].id}])).toBe(false);});
 it('rejects duplicate task ids that differ only by case or surrounding space',()=>{expect(isTaskList([seedTasks[0],{...seedTasks[1],id:` ${seedTasks[0].id.toLowerCase()} `}])).toBe(false);});
 it('rejects saved tasks without a usable identity or display context',()=>{for(const patch of [{id:' '},{title:''},{project:'  '}])expect(isTask({...seedTasks[0],...patch})).toBe(false);});
 it('requires a visible reason for blocked saved work',()=>{expect(isTask({...seedTasks[0],status:'Blocked',blocker:undefined})).toBe(false);expect(isTask({...seedTasks[0],status:'Blocked',blocker:'  '})).toBe(false);expect(isTask({...seedTasks[0],status:'Blocked',blocker:'Waiting on approval'})).toBe(true);});
+it('bounds saved task fields to a reviewable size',()=>{expect(isTask({...seedTasks[0],id:'x'.repeat(MAX_TASK_ID_LENGTH+1)})).toBe(false);expect(isTask({...seedTasks[0],title:'x'.repeat(MAX_TASK_TITLE_LENGTH+1)})).toBe(false);expect(isTask({...seedTasks[0],project:'x'.repeat(MAX_PROJECT_LENGTH+1)})).toBe(false);expect(isTask({...seedTasks[0],blocker:'x'.repeat(MAX_BLOCKER_LENGTH+1)})).toBe(false);});
+it('rejects saved boards beyond the reviewable task limit',()=>{const tasks=Array.from({length:MAX_SAVED_TASKS+1},(_,index)=>({...seedTasks[0],id:`NTH-${index}`}));expect(isTaskList(tasks)).toBe(false);});
