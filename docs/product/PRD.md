@@ -45,6 +45,18 @@ The first release favors clarity and recoverability over broad automation. It ex
 
 This sample has no authentication, Asana or other task-system integration, API, external model, paid service, live customer data, analytics, notifications, permission system, or production claim.
 
+## Saved-board review limits
+
+| Saved element | Accepted boundary | Product reason |
+|---|---:|---|
+| Tasks | 1–50 records | Keeps a single replacement review inspectable in this card-based sample. |
+| Task code | 1–40 characters | Preserves a stable readable identifier without accepting an unbounded label. |
+| Title | 1–160 characters | Supports descriptive work while keeping task cards and previews usable. |
+| Project | 1–80 characters | Keeps grouping context readable in the current layout. |
+| Blocker reason | 1–500 characters when present | Allows actionable context while bounding restored browser content. |
+
+Status, owner, and priority must match the visible supported vocabularies, and due dates must be real calendar dates in `YYYY-MM-DD` form. These are prototype review limits rather than claims about Asana or a production workspace. A future larger workspace would require search, pagination, permissions, and a different bulk-review design before these limits could be raised responsibly.
+
 ## Acceptance criteria
 
 Every supplied capability example works as written. A read request does not open a change preview. A negated change does not prepare an opposite update. A change never applies before confirmation, including bulk, reset, and undo. Task-title replies lead with readable titles; change previews pair those titles with stable task codes. A pronoun can reuse the immediately established single-task context, but an intervening board-wide answer expires it. Saved state survives reload when storage is available, and an invalid saved state does not crash or get overwritten without a confirmed reset.
