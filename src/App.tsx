@@ -90,14 +90,16 @@ function App() {
   function confirmMutation() {
     if (!pending) return
     if (pending.kind === 'replace') {
-      setPersistEnabled(true); setStorageWarning(false); setUndo({ tasks, label: pending.label }); setTasks(pending.tasks); setContextTaskId(undefined)
+      const hasVisibleChanges = previewRows.length > 0
+      setPersistEnabled(true); setStorageWarning(false); setUndo(hasVisibleChanges ? { tasks, label: pending.label } : null); setTasks(pending.tasks); setContextTaskId(undefined)
+      addMessage('Workspace guide', hasVisibleChanges ? `Done. ${pending.label}. You can use “Undo last change” if you need to recover it.` : `Done. ${pending.label}. No visible task values changed, so there is no new undo step.`)
     } else {
       setUndo({ tasks, label: pending.label }); setTasks((current) => {
         const primary = updateTasks(current, pending.ids, pending.field, pending.value)
         return pending.secondary ? updateTasks(primary, pending.ids, pending.secondary.field, pending.secondary.value) : primary
       })
+      addMessage('Workspace guide', `Done. ${pending.label}. You can use “Undo last change” if you need to recover it.`)
     }
-    addMessage('Workspace guide', `Done. ${pending.label}. You can use “Undo last change” if you need to recover it.`)
     setPending(null)
   }
 

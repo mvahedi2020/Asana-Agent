@@ -74,7 +74,9 @@ test('shows only visible task differences in replacement previews', async ({ pag
   const dialog = page.getByRole('dialog')
   await expect(dialog).toContainText('No visible task values differ')
   await expect(dialog.locator('.preview-row')).toHaveCount(0)
-  await dialog.getByRole('button', { name: 'Cancel' }).click()
+  await dialog.getByRole('button', { name: 'Confirm change' }).click()
+  await expect(page.getByText(/no new undo step/i).last()).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Undo last change' })).toHaveCount(0)
 
   await page.getByLabel('Owner for Review trial nurture copy').selectOption('Maya Chen')
   await page.getByRole('dialog').getByRole('button', { name: 'Confirm change' }).click()
