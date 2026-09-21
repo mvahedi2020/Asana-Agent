@@ -125,4 +125,13 @@ describe('plain-language workspace guide', () => {
     expect(rows[0].before).toContain('Due: 2026-09-30')
     expect(rows[0].after).toContain('Priority: High')
   })
+
+  it('shows added, removed, and normalized task identities in a replacement', () => {
+    const extra = { ...seedTasks[0], id: 'NTH-999', title: 'Temporary saved task' }
+    const current = [{ ...seedTasks[0], id: ' nth-104 ' }, extra]
+    const rows = replacementPreviewRows(current, [seedTasks[0], seedTasks[1]])
+    expect(rows.find((row) => row.id === 'NTH-104')?.before).toContain('Task code:  nth-104 ')
+    expect(rows.find((row) => row.id === 'NTH-999')?.after).toContain('removed')
+    expect(rows.find((row) => row.id === 'NTH-108')?.after).toContain('added')
+  })
 })

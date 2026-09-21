@@ -21,3 +21,15 @@ test('invalid stored dates recover to the sample without a render crash', async 
   await expect(page.getByRole('status')).toContainText('could not be read')
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('northstar.asana-agent.v1')!).tasks[0].due)).toBe('2026-99-99')
 })
+
+test('reset preview identifies tasks added to and removed from the board', async ({ page }) => {
+  const extra = { ...seedTasks[0], id: 'NTH-999', title: 'Temporary saved task' }
+  await page.addInitScript((tasks) => localStorage.setItem('northstar.asana-agent.v1', JSON.stringify({ version: 1, tasks })), [...seedTasks.slice(0, -1), extra])
+  await page.goto('./')
+  await page.getByRole('button', { name: 'Reset sample' }).click()
+  const dialog = page.getByRole('dialog')
+  await expect(dialog).toContainText('NTH-999 · Temporary saved task')
+  await expect(dialog).toContainText('Record removed by this replacement')
+  await expect(dialog).toContainText('NTH-121 · Ship role template empty state')
+  await expect(dialog).toContainText('Record added by this replacement')
+})

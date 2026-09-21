@@ -62,6 +62,7 @@ export function tasksDueThisSampleWeek(tasks: Task[]): Task[] {
 }
 
 const previewFields = (task: Task) => [
+  ['Task code', task.id],
   ['Title', task.title],
   ['Project', task.project],
   ['Status', task.status],
@@ -72,12 +73,17 @@ const previewFields = (task: Task) => [
 ] as const
 
 export function replacementPreviewRows(current: Task[], replacement: Task[]): PreviewRow[] {
-  return current.flatMap((task) => {
-    const next = replacement.find((candidate) => candidate.id === task.id)
-    if (!next) return []
+  const key = (task: Task) => task.id.trim().toLowerCase()
+  const currentKeys = new Set(current.map(key))
+  const replacements = new Map(replacement.map((task) => [key(task), task]))
+  const changedOrRemoved = current.flatMap((task) => {
+    const next = replacements.get(key(task))
+    if (!next) return [{ id: task.id, title: task.title, before: 'Record exists in the saved board', after: 'Record removed by this replacement' }]
     const changed = previewFields(task).map(([label, before], index) => ({ label, before, after: previewFields(next)[index][1] })).filter((field) => field.before !== field.after)
-    return changed.length ? [{ id: task.id, title: next.title, before: changed.map((field) => `${field.label}: ${field.before}`).join(' · '), after: changed.map((field) => `${field.label}: ${field.after}`).join(' · ') }] : []
+    return changed.length ? [{ id: next.id, title: next.title, before: changed.map((field) => `${field.label}: ${field.before}`).join(' · '), after: changed.map((field) => `${field.label}: ${field.after}`).join(' · ') }] : []
   })
+  const added = replacement.filter((task) => !currentKeys.has(key(task))).map((task) => ({ id: task.id, title: task.title, before: 'Record absent from the saved board', after: 'Record added by this replacement' }))
+  return [...changedOrRemoved, ...added]
 }
 
 function statusFrom(input: string, allowStandaloneReview = true): Status | undefined {
