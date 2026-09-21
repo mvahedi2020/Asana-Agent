@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
-import { ChangeRequest, isTaskList, interpretRequest, people, seedTasks, Status, statuses, Task, tasksDueThisSampleWeek, updateTasks } from './logic'
+import { ChangeRequest, isTaskList, interpretRequest, people, replacementPreviewRows, seedTasks, Status, statuses, Task, tasksDueThisSampleWeek, updateTasks } from './logic'
 
 const STORAGE_KEY = 'northstar.asana-agent.v1'
 type Page = 'board' | 'briefing' | 'case-study'
@@ -69,13 +69,7 @@ function App() {
 
   const summary = useMemo(() => ({ open: tasks.filter((task) => task.status !== 'Complete').length, blocked: tasks.filter((task) => task.status === 'Blocked').length, done: tasks.filter((task) => task.status === 'Complete').length }), [tasks])
   const previewRows = pending ? pending.kind === 'replace'
-    ? tasks.flatMap((task) => {
-      const replacement = pending.tasks.find((item) => item.id === task.id)
-      if (!replacement) return []
-      const before = `${task.status}; ${task.assignee}`
-      const after = `${replacement.status}; ${replacement.assignee}`
-      return before === after ? [] : [{ id: task.id, title: task.title, before, after }]
-    })
+    ? replacementPreviewRows(tasks, pending.tasks)
     : tasks.filter((task) => pending.ids.includes(task.id)).map((task) => {
       const changes = [{ field: pending.field, value: pending.value }, ...(pending.secondary ? [pending.secondary] : [])]
       return { id: task.id, title: task.title, before: changes.map((change) => `${change.field === 'status' ? 'Status' : 'Owner'}: ${change.field === 'status' ? task.status : task.assignee}`).join(' · '), after: changes.map((change) => `${change.field === 'status' ? 'Status' : 'Owner'}: ${change.value}`).join(' · ') }

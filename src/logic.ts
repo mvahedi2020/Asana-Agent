@@ -15,6 +15,7 @@ export interface Task {
 export type Field = 'status' | 'assignee'
 export type ChangeRequest = { kind: 'change'; ids: string[]; field: Field; value: Status | Person; secondary?: { field: Field; value: Status | Person }; label: string }
 export type AssistantResult = { type: 'reply'; text: string; contextTaskId?: string } | { type: 'change'; request: ChangeRequest; text: string; contextTaskId: string }
+export type PreviewRow = { id: string; title: string; before: string; after: string }
 
 export const SAMPLE_TODAY = '2026-09-08'
 export const SAMPLE_WEEK_END = '2026-09-14'
@@ -58,6 +59,25 @@ export function readTaskList(tasks: Task[]): string {
 
 export function tasksDueThisSampleWeek(tasks: Task[]): Task[] {
   return tasks.filter((task) => task.status !== 'Complete' && task.due <= SAMPLE_WEEK_END).sort((a, b) => a.due.localeCompare(b.due))
+}
+
+const previewFields = (task: Task) => [
+  ['Title', task.title],
+  ['Project', task.project],
+  ['Status', task.status],
+  ['Owner', task.assignee],
+  ['Due', task.due],
+  ['Priority', task.priority],
+  ['Blocker', task.blocker?.trim() || 'None'],
+] as const
+
+export function replacementPreviewRows(current: Task[], replacement: Task[]): PreviewRow[] {
+  return current.flatMap((task) => {
+    const next = replacement.find((candidate) => candidate.id === task.id)
+    if (!next) return []
+    const changed = previewFields(task).map(([label, before], index) => ({ label, before, after: previewFields(next)[index][1] })).filter((field) => field.before !== field.after)
+    return changed.length ? [{ id: task.id, title: next.title, before: changed.map((field) => `${field.label}: ${field.before}`).join(' · '), after: changed.map((field) => `${field.label}: ${field.after}`).join(' · ') }] : []
+  })
 }
 
 function statusFrom(input: string, allowStandaloneReview = true): Status | undefined {

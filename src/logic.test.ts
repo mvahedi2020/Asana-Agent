@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { interpretRequest, isTask, seedTasks, tasksDueThisSampleWeek, updateTasks } from './logic'
+import { interpretRequest, isTask, replacementPreviewRows, seedTasks, tasksDueThisSampleWeek, updateTasks } from './logic'
 
 describe('plain-language workspace guide', () => {
   it('prepares a status change from a task title and an everyday status word', () => {
@@ -115,5 +115,14 @@ describe('plain-language workspace guide', () => {
     expect(byId('NTH-104')).toMatchObject({ title: 'Finalize onboarding checklist', status: 'In progress', assignee: 'Maya Chen' })
     expect(byId('NTH-112')).toMatchObject({ title: 'Review trial nurture copy', status: 'In review', assignee: 'Priya Shah' })
     expect(byId('NTH-115')).toMatchObject({ title: 'Validate admin invite flow', status: 'Planned', due: '2026-09-11' })
+  })
+
+  it('shows every visible field changed by a board replacement', () => {
+    const saved = [{ ...seedTasks[0], title: 'Saved onboarding title', due: '2026-09-30', priority: 'Low' as const }]
+    const rows = replacementPreviewRows(saved, [seedTasks[0]])
+    expect(rows).toHaveLength(1)
+    expect(rows[0].before).toContain('Title: Saved onboarding title')
+    expect(rows[0].before).toContain('Due: 2026-09-30')
+    expect(rows[0].after).toContain('Priority: High')
   })
 })
