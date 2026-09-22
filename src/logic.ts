@@ -24,6 +24,7 @@ export const MAX_TASK_ID_LENGTH = 40
 export const MAX_TASK_TITLE_LENGTH = 160
 export const MAX_PROJECT_LENGTH = 80
 export const MAX_BLOCKER_LENGTH = 500
+export const MAX_REQUEST_LENGTH = 500
 export const people: Person[] = ['Maya Chen', 'Jon Bell', 'Priya Shah', 'Unassigned']
 export const statuses: Status[] = ['Planned', 'In progress', 'Blocked', 'In review', 'Complete']
 
@@ -138,6 +139,7 @@ function changeVerb(input: string) { return /\b(assign|give|make|set|change|move
 function names(tasks: Task[]) { return tasks.map((task) => `“${task.title}”`).join(', ') }
 
 export function interpretRequest(input: string, tasks: Task[], contextTaskId?: string): AssistantResult {
+  if (input.length > MAX_REQUEST_LENGTH) return { type: 'reply', text: `Keep the request to ${MAX_REQUEST_LENGTH} characters or fewer so the task and proposed change remain reviewable. No change has been prepared.` }
   const lower = input.toLowerCase()
   const directMatches = findTasks(input, tasks)
   const usesPronoun = /\b(it|that|this one)\b/.test(lower)

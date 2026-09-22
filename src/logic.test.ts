@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { canSetStatus, interpretRequest, isTask, replacementPreviewRows, seedTasks, tasksDueThisSampleWeek, updateTasks } from './logic'
+import { canSetStatus, interpretRequest, isTask, MAX_REQUEST_LENGTH, replacementPreviewRows, seedTasks, tasksDueThisSampleWeek, updateTasks } from './logic'
 
 describe('plain-language workspace guide', () => {
   it('prepares a status change from a task title and an everyday status word', () => {
@@ -59,6 +59,12 @@ describe('plain-language workspace guide', () => {
     const result = interpretRequest('Mark it done', seedTasks)
     expect(result.type).toBe('reply')
     expect(result.text).toContain('Which task')
+  })
+
+  it('declines oversized requests before interpreting a task change', () => {
+    const result = interpretRequest(`Mark NTH-104 done ${'x'.repeat(MAX_REQUEST_LENGTH)}`, seedTasks)
+    expect(result.type).toBe('reply')
+    expect(result.text).toContain(`${MAX_REQUEST_LENGTH} characters or fewer`)
   })
 
   it('does not silently choose between conflicting requested values', () => {

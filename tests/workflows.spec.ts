@@ -160,6 +160,8 @@ test('renders the complete desktop workspace with its conversation controls', as
   await expect(page.getByRole('heading', { name: 'A calmer way to move work forward.' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Talk it through' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Complete tasks in review' })).toBeVisible()
+  await expect(page.getByLabel('Ask about the sample work')).toHaveAttribute('maxlength', '500')
+  await expect(page.getByText('Up to 500 characters. One clear task change per request.')).toBeVisible()
   expect(await page.getByLabel('Status for Finalize onboarding checklist').locator('option[value="Blocked"]').evaluate((option: HTMLOptionElement) => option.disabled)).toBe(true)
   expect(await page.getByLabel('Status for Instrument workspace-created event').locator('option[value="Blocked"]').evaluate((option: HTMLOptionElement) => option.disabled)).toBe(false)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)

@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
-import { canSetStatus, ChangeRequest, isTaskList, interpretRequest, people, replacementPreviewRows, seedTasks, Status, statuses, Task, tasksDueThisSampleWeek, updateTasks } from './logic'
+import { canSetStatus, ChangeRequest, isTaskList, interpretRequest, MAX_REQUEST_LENGTH, people, replacementPreviewRows, seedTasks, Status, statuses, Task, tasksDueThisSampleWeek, updateTasks } from './logic'
 
 const STORAGE_KEY = 'northstar.asana-agent.v1'
 type Page = 'board' | 'briefing' | 'case-study'
@@ -144,7 +144,7 @@ function App() {
             <div className="capability-note"><strong>What I can do here</strong><span>Find work, explain blockers and due dates, or prepare a status or owner change in this sample board.</span></div>
             <div className="suggestions" aria-label="Try one of these examples">{['What is blocked?', 'When is Validate admin invite flow due?', 'Mark Finalize onboarding checklist as done', 'Assign Review trial nurture copy to Jon Bell', 'Complete all tasks in review'].map((question) => <button key={question} onClick={() => runQuery(question)}>{question}</button>)}</div>
             <div className="conversation" aria-live="polite">{messages.length === 0 ? <div className="empty"><span>✦</span><p>Your conversation is clear.</p><small>Your tasks and any open change preview are still here.</small></div> : messages.map((message) => <div key={message.id} className={`message ${message.role === 'You' ? 'user' : 'agent'}`}><b>{message.role}</b><p>{message.text}</p></div>)}</div>
-            <form onSubmit={submit} className="composer"><label htmlFor="agent-input">Ask about the sample work</label><textarea id="agent-input" value={input} onChange={(event) => setInput(event.target.value)} placeholder="For example: mark the onboarding checklist done" rows={3} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} /><button type="submit">Send</button></form>
+            <form onSubmit={submit} className="composer"><label htmlFor="agent-input">Ask about the sample work</label><textarea id="agent-input" value={input} maxLength={MAX_REQUEST_LENGTH} aria-describedby="request-limit" onChange={(event) => setInput(event.target.value)} placeholder="For example: mark the onboarding checklist done" rows={3} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} /><small id="request-limit">Up to {MAX_REQUEST_LENGTH} characters. One clear task change per request.</small><button type="submit">Send</button></form>
             <p className="fine-print">Simulated assistant. Uses only the tasks shown here — no account, API, or external AI service.</p>
           </aside>
         </div>
