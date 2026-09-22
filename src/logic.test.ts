@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { interpretRequest, isTask, replacementPreviewRows, seedTasks, tasksDueThisSampleWeek, updateTasks } from './logic'
+import { canSetStatus, interpretRequest, isTask, replacementPreviewRows, seedTasks, tasksDueThisSampleWeek, updateTasks } from './logic'
 
 describe('plain-language workspace guide', () => {
   it('prepares a status change from a task title and an everyday status word', () => {
@@ -40,6 +40,12 @@ describe('plain-language workspace guide', () => {
     expect(missingReason.text).toContain('no blocker reason')
     const unblocked = updateTasks(seedTasks, ['NTH-108'], 'status', 'In progress')
     expect(interpretRequest('Mark Instrument workspace-created event blocked', unblocked).type).toBe('change')
+  })
+
+  it('uses one status policy for tasks with and without blocker context', () => {
+    expect(canSetStatus(seedTasks[0], 'Blocked')).toBe(false)
+    expect(canSetStatus(seedTasks[1], 'Blocked')).toBe(true)
+    expect(canSetStatus(seedTasks[0], 'In review')).toBe(true)
   })
 
   it('accepts a first name in an owner follow-up', () => {

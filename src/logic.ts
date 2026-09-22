@@ -36,6 +36,10 @@ export const seedTasks: Task[] = [
   { id: 'NTH-121', title: 'Ship role template empty state', project: 'Adoption', status: 'Complete', assignee: 'Jon Bell', due: '2026-09-05', priority: 'Low' },
 ]
 
+export function canSetStatus(task: Task, status: Status): boolean {
+  return status !== 'Blocked' || Boolean(task.blocker?.trim())
+}
+
 const stopWords = new Set(['a', 'an', 'the', 'to', 'for', 'of', 'on', 'in', 'at', 'this', 'that', 'task', 'tasks', 'status', 'please', 'can', 'you', 'me', 'my', 'with', 'and', 'all'])
 const date = (value: string) => new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`))
 const quoted = (input: string) => [...input.matchAll(/["“]([^"”]+)["”]/g)].map((match) => match[1].toLowerCase())
@@ -154,7 +158,7 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
   if (asksToChange && peopleFrom(input).length > 1) return { type: 'reply', text: 'I found more than one possible owner. Please choose one owner so I can prepare a clear change.' }
   if (asksToChange && directMatches.length > 1) return { type: 'reply', text: `I found more than one possible task: ${names(directMatches)}. Please name one task or use its task code so I can prepare the right change.` }
   if (asksToChange && !matched.length) return { type: 'reply', text: 'Which task should I change? Please give its title or task code. I will show the exact change before anything is updated.' }
-  if (asksToChange && requestedStatus === 'Blocked' && !matched[0].blocker?.trim()) return { type: 'reply', text: `“${matched[0].title}” has no blocker reason in this sample. Add a reviewable blocker reason before changing its status to Blocked; no change has been prepared.`, contextTaskId: matched[0].id }
+  if (asksToChange && requestedStatus && !canSetStatus(matched[0], requestedStatus)) return { type: 'reply', text: `“${matched[0].title}” has no blocker reason in this sample. Add a reviewable blocker reason before changing its status to Blocked; no change has been prepared.`, contextTaskId: matched[0].id }
   if (asksToChange && assignee && requestedStatus) {
     const task = matched[0]
     if (task.status === requestedStatus && task.assignee === assignee) return { type: 'reply', text: `“${task.title}” is already ${requestedStatus.toLowerCase()} and owned by ${assignee}. No change is needed.`, contextTaskId: task.id }

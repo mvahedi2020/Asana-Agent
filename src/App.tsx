@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
-import { ChangeRequest, isTaskList, interpretRequest, people, replacementPreviewRows, seedTasks, Status, statuses, Task, tasksDueThisSampleWeek, updateTasks } from './logic'
+import { canSetStatus, ChangeRequest, isTaskList, interpretRequest, people, replacementPreviewRows, seedTasks, Status, statuses, Task, tasksDueThisSampleWeek, updateTasks } from './logic'
 
 const STORAGE_KEY = 'northstar.asana-agent.v1'
 type Page = 'board' | 'briefing' | 'case-study'
@@ -114,6 +114,7 @@ function App() {
   function submit(event: FormEvent) { event.preventDefault(); const value = input.trim(); if (!value) return; setInput(''); runQuery(value) }
   function directChange(task: Task, field: 'status' | 'assignee', value: string) {
     if ((field === 'status' && task.status === value) || (field === 'assignee' && task.assignee === value)) return
+    if (field === 'status' && !canSetStatus(task, value as Status)) return
     setContextTaskId(task.id)
     const isStatus = field === 'status'
     requestMutation({ kind: 'change', ids: [task.id], field, value: value as Status, label: isStatus ? `Change “${task.title}” from ${task.status} to ${value}` : `Change the owner of “${task.title}” from ${task.assignee} to ${value}` })
@@ -157,7 +158,7 @@ function App() {
 }
 
 function TaskCard({ task, onChange }: { task: Task; onChange: (task: Task, field: 'status' | 'assignee', value: string) => void }) {
-  return <article className={`task-card status-${task.status.toLowerCase().replaceAll(' ', '-')}`}><div className="task-main"><div className="task-topline"><span className="task-id">{task.id}</span><span className="project-tag">{task.project}</span></div><h3>{task.title}</h3><p>{task.priority} priority · Due <time dateTime={task.due}>{formatDue(task.due)}</time></p>{task.blocker && task.status === 'Blocked' && <p className="blocker-note"><b>Blocked:</b> {task.blocker}</p>}</div><div className="task-controls"><label>Status<select aria-label={`Status for ${task.title}`} value={task.status} onChange={(event) => onChange(task, 'status', event.target.value)}>{statuses.map((status) => <option value={status} key={status} disabled={status === 'Blocked' && !task.blocker?.trim()}>{status === 'Blocked' && !task.blocker?.trim() ? 'Blocked — reason required' : status}</option>)}</select></label><label>Owner<select aria-label={`Owner for ${task.title}`} value={task.assignee} onChange={(event) => onChange(task, 'assignee', event.target.value)}>{people.map((person) => <option value={person} key={person}>{person}</option>)}</select></label></div></article>
+  return <article className={`task-card status-${task.status.toLowerCase().replaceAll(' ', '-')}`}><div className="task-main"><div className="task-topline"><span className="task-id">{task.id}</span><span className="project-tag">{task.project}</span></div><h3>{task.title}</h3><p>{task.priority} priority · Due <time dateTime={task.due}>{formatDue(task.due)}</time></p>{task.blocker && task.status === 'Blocked' && <p className="blocker-note"><b>Blocked:</b> {task.blocker}</p>}</div><div className="task-controls"><label>Status<select aria-label={`Status for ${task.title}`} value={task.status} onChange={(event) => onChange(task, 'status', event.target.value)}>{statuses.map((status) => <option value={status} key={status} disabled={!canSetStatus(task, status)}>{!canSetStatus(task, status) ? 'Blocked — reason required' : status}</option>)}</select></label><label>Owner<select aria-label={`Owner for ${task.title}`} value={task.assignee} onChange={(event) => onChange(task, 'assignee', event.target.value)}>{people.map((person) => <option value={person} key={person}>{person}</option>)}</select></label></div></article>
 }
 
 function Briefing({ tasks, onRun }: { tasks: Task[]; onRun: (query: string) => void }) {
