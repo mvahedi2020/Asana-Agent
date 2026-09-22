@@ -26,6 +26,7 @@ The first release favors clarity and recoverability over broad automation. It ex
 | Ambiguity and negation | Multiple or missing matches prompt for a task; negated changes create no proposal. | Resolve ambiguity explicitly rather than rephrasing it as a guessed update. |
 | Bulk, reset, and Undo | Every changed, added, or removed task is previewed and requires confirm or cancel. An unchanged reset creates no empty Undo step. | Review the displayed scope before confirmation. |
 | Local persistence | Confirmed valid sample state persists where browser storage works; oversized or incompatible saved boards remain untouched until explicit reset. | Do not infer collaboration, audit history, or a connected system. |
+| Conversation bounds | Requests accept up to 500 characters and the tab retains the most recent 40 messages. Oversized requests create no proposal. | Split complex work into one clear, reviewable task change at a time. |
 
 ## Required behavior
 
@@ -40,6 +41,8 @@ The first release favors clarity and recoverability over broad automation. It ex
 9. Work with keyboard controls and a narrow mobile viewport.
 10. Require a nonblank blocker reason before offering **Blocked** as a new status. A task that already carries a blocker reason may leave and later return to Blocked because the reason remains visible in its record.
 11. Clear single-task conversational context when the transcript is cleared or a reset/undo replaces the board. Replacement previews list only records or fields that will change; if no visible values differ, the review says why confirmation may still matter for incompatible saved data.
+12. Apply the same Blocked eligibility rule in conversation interpretation, direct controls, and defensive action handling. A disabled selector must not be the only enforcement point.
+13. State the number of affected tasks in every nonempty review and label each value as **Before** or **After**. Associate the dialog description, scope, and local-data boundary with the dialog for assistive technology.
 
 ## Non-goals
 
@@ -54,6 +57,8 @@ This sample has no authentication, Asana or other task-system integration, API, 
 | Title | 1–160 characters | Supports descriptive work while keeping task cards and previews usable. |
 | Project | 1–80 characters | Keeps grouping context readable in the current layout. |
 | Blocker reason | 1–500 characters when present | Allows actionable context while bounding restored browser content. |
+| One assistant request | 1–500 characters | Keeps target and intent reviewable in one proposal. |
+| Local transcript | Most recent 40 messages | Bounds the in-tab conversation while retaining recent context; task data is unaffected. |
 
 Status, owner, and priority must match the visible supported vocabularies, and due dates must be real calendar dates in `YYYY-MM-DD` form. These are prototype review limits rather than claims about Asana or a production workspace. A future larger workspace would require search, pagination, permissions, and a different bulk-review design before these limits could be raised responsibly.
 
