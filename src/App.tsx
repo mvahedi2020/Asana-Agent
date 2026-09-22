@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { canSetStatus, ChangeRequest, isTaskList, interpretRequest, MAX_REQUEST_LENGTH, people, replacementPreviewRows, seedTasks, Status, statuses, Task, tasksDueThisSampleWeek, updateTasks } from './logic'
 
 const STORAGE_KEY = 'northstar.asana-agent.v1'
+const MAX_TRANSCRIPT_MESSAGES = 40
 type Page = 'board' | 'briefing' | 'case-study'
 type Message = { id: number; role: 'You' | 'Workspace guide'; text: string }
 type ReplaceRequest = { kind: 'replace'; tasks: Task[]; label: string }
@@ -80,7 +81,9 @@ function App() {
     setPending(mutation)
   }
 
-  function addMessage(role: Message['role'], text: string) { setMessages((current) => [...current, { id: Date.now() + Math.random(), role, text }]) }
+  function addMessages(...entries: Omit<Message, 'id'>[]) {
+    setMessages((current) => [...current, ...entries.map((entry) => ({ ...entry, id: Date.now() + Math.random() }))].slice(-MAX_TRANSCRIPT_MESSAGES))
+  }
 
   function clearConversation() {
     setMessages([])
@@ -92,21 +95,20 @@ function App() {
     if (pending.kind === 'replace') {
       const hasVisibleChanges = previewRows.length > 0
       setPersistEnabled(true); setStorageWarning(false); setUndo(hasVisibleChanges ? { tasks, label: pending.label } : null); setTasks(pending.tasks); setContextTaskId(undefined)
-      addMessage('Workspace guide', hasVisibleChanges ? `Done. ${pending.label}. You can use “Undo last change” if you need to recover it.` : `Done. ${pending.label}. No visible task values changed, so there is no new undo step.`)
+      addMessages({ role: 'Workspace guide', text: hasVisibleChanges ? `Done. ${pending.label}. You can use “Undo last change” if you need to recover it.` : `Done. ${pending.label}. No visible task values changed, so there is no new undo step.` })
     } else {
       setUndo({ tasks, label: pending.label }); setTasks((current) => {
         const primary = updateTasks(current, pending.ids, pending.field, pending.value)
         return pending.secondary ? updateTasks(primary, pending.ids, pending.secondary.field, pending.secondary.value) : primary
       })
-      addMessage('Workspace guide', `Done. ${pending.label}. You can use “Undo last change” if you need to recover it.`)
+      addMessages({ role: 'Workspace guide', text: `Done. ${pending.label}. You can use “Undo last change” if you need to recover it.` })
     }
     setPending(null)
   }
 
   function runQuery(text: string) {
     const result = interpretRequest(text, tasks, contextTaskId)
-    addMessage('You', text)
-    addMessage('Workspace guide', result.text)
+    addMessages({ role: 'You', text }, { role: 'Workspace guide', text: result.text })
     setContextTaskId(result.contextTaskId)
     if (result.type === 'change') requestMutation(result.request)
   }
@@ -145,7 +147,7 @@ function App() {
             <div className="suggestions" aria-label="Try one of these examples">{['What is blocked?', 'When is Validate admin invite flow due?', 'Mark Finalize onboarding checklist as done', 'Assign Review trial nurture copy to Jon Bell', 'Complete all tasks in review'].map((question) => <button key={question} onClick={() => runQuery(question)}>{question}</button>)}</div>
             <div className="conversation" aria-live="polite">{messages.length === 0 ? <div className="empty"><span>✦</span><p>Your conversation is clear.</p><small>Your tasks and any open change preview are still here.</small></div> : messages.map((message) => <div key={message.id} className={`message ${message.role === 'You' ? 'user' : 'agent'}`}><b>{message.role}</b><p>{message.text}</p></div>)}</div>
             <form onSubmit={submit} className="composer"><label htmlFor="agent-input">Ask about the sample work</label><textarea id="agent-input" value={input} maxLength={MAX_REQUEST_LENGTH} aria-describedby="request-limit" onChange={(event) => setInput(event.target.value)} placeholder="For example: mark the onboarding checklist done" rows={3} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} /><small id="request-limit">Up to {MAX_REQUEST_LENGTH} characters. One clear task change per request.</small><button type="submit">Send</button></form>
-            <p className="fine-print">Simulated assistant. Uses only the tasks shown here — no account, API, or external AI service.</p>
+            <p className="fine-print">Simulated assistant. Uses only the tasks shown here — no account, API, or external AI service. The most recent {MAX_TRANSCRIPT_MESSAGES} messages stay in this tab.</p>
           </aside>
         </div>
       </>}

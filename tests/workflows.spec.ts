@@ -57,6 +57,17 @@ test('clears hidden task context with the conversation', async ({ page }) => {
   await expect(page.getByRole('dialog')).toHaveCount(0)
 })
 
+test('bounds the local transcript while retaining the latest exchange', async ({ page }) => {
+  const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
+  for (let index = 1; index <= 21; index += 1) {
+    await input.fill(`Book a flight request ${index}`)
+    await page.getByRole('button', { name: 'Send' }).click()
+  }
+  await expect(page.locator('.message')).toHaveCount(40)
+  await expect(page.getByText('Book a flight request 21')).toBeVisible()
+  await expect(page.getByText('Book a flight request 1', { exact: true })).toHaveCount(0)
+})
+
 test('expires task context when a reset replaces board state', async ({ page }) => {
   const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
   await input.fill('When is Validate admin invite flow due?')
