@@ -86,7 +86,7 @@ test('expires task context when a reset replaces board state', async ({ page }) 
 test('shows only visible task differences in replacement previews', async ({ page }) => {
   await page.getByRole('button', { name: 'Reset sample' }).click()
   const dialog = page.getByRole('dialog')
-  await expect(dialog).toContainText('No visible task values differ')
+  await expect(dialog).toContainText('No visible task values will change')
   await expect(dialog.locator('.preview-row')).toHaveCount(0)
   await dialog.getByRole('button', { name: 'Confirm change' }).click()
   await expect(page.getByText(/no new undo step/i).last()).toBeVisible()
