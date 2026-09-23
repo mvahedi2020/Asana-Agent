@@ -6,7 +6,7 @@ A fictional Northstar product, delivery, or program lead needs a quick way to in
 
 ## Product choice
 
-The prototype pairs a constrained local workspace guide with visible task cards. It can answer grounded questions, prepare supported status and owner changes, and use direct controls. Each task, reset, Undo, and bulk update becomes a preview with readable task titles and before-and-after values. NTH-104 makes the choice concrete: “Mark Finalize onboarding checklist as done” prepares **In progress → Complete**; it changes only after confirmation.
+The prototype pairs a constrained local workspace guide with visible task cards. It can answer grounded questions and prepare supported status and owner changes. A task card also lets a person add or edit a blocker reason through the same reviewed flow; the guide points reason-editing requests to that control rather than guessing the reason. Each task, reset, Undo, and bulk update becomes a preview with readable task titles and before-and-after values. NTH-104 makes the choice concrete: “Mark Finalize onboarding checklist as done” prepares **In progress → Complete**; it changes only after confirmation.
 
 ## Cost and boundary
 
