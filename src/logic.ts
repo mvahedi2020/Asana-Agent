@@ -243,7 +243,8 @@ export function updateTasks(tasks: Task[], ids: string[], field: Field, value: s
       }
       return { ...task, blocker: reason }
     }
-    if (field === 'status' && !canSetStatus(task, value as Status)) return task
+    if (field === 'status' && (!statuses.includes(value as Status) || !canSetStatus(task, value as Status))) return task
+    if (field === 'assignee' && !people.includes(value as Person)) return task
     return { ...task, [field]: value }
   })
 }

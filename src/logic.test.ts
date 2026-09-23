@@ -60,6 +60,11 @@ describe('plain-language workspace guide', () => {
     expect(canSetBlockerReason(seedTasks[0], 'x'.repeat(MAX_BLOCKER_LENGTH + 1))).toBe(false)
   })
 
+  it('rejects unsupported status and owner values at the task update boundary', () => {
+    expect(updateTasks(seedTasks, ['NTH-104'], 'status', 'Paused')).toEqual(seedTasks)
+    expect(updateTasks(seedTasks, ['NTH-104'], 'assignee', 'Unknown owner')).toEqual(seedTasks)
+  })
+
   it('routes reason-edit requests to the explicit reviewed control', () => {
     for (const request of ['Set blocker reason for NTH-104 to legal approval', 'Mark NTH-104 blocked because legal approval is pending']) {
       const result = interpretRequest(request, seedTasks)
