@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { canSetStatus, interpretRequest, isTask, MAX_REQUEST_LENGTH, replacementPreviewRows, seedTasks, tasksDueThisSampleWeek, updateTasks } from './logic'
+import { canSetBlockerReason, canSetStatus, interpretRequest, isTask, MAX_BLOCKER_LENGTH, MAX_REQUEST_LENGTH, replacementPreviewRows, seedTasks, tasksDueThisSampleWeek, updateTasks } from './logic'
 
 describe('plain-language workspace guide', () => {
   it('prepares a status change from a task title and an everyday status word', () => {
@@ -46,6 +46,18 @@ describe('plain-language workspace guide', () => {
     expect(canSetStatus(seedTasks[0], 'Blocked')).toBe(false)
     expect(canSetStatus(seedTasks[1], 'Blocked')).toBe(true)
     expect(canSetStatus(seedTasks[0], 'In review')).toBe(true)
+  })
+
+  it('normalizes a blocker reason and protects blocked work from a blank reason', () => {
+    const added = updateTasks(seedTasks, ['NTH-104'], 'blocker', '  Waiting on legal approval  ')
+    expect(added[0].blocker).toBe('Waiting on legal approval')
+    expect(isTask(added[0])).toBe(true)
+    expect(canSetStatus(added[0], 'Blocked')).toBe(true)
+    const rejected = updateTasks(seedTasks, ['NTH-108'], 'blocker', '   ')
+    expect(rejected[1].blocker).toBe(seedTasks[1].blocker)
+    const cleared = updateTasks(added, ['NTH-104'], 'blocker', '')
+    expect(cleared[0].blocker).toBeUndefined()
+    expect(canSetBlockerReason(seedTasks[0], 'x'.repeat(MAX_BLOCKER_LENGTH + 1))).toBe(false)
   })
 
   it('accepts a first name in an owner follow-up', () => {

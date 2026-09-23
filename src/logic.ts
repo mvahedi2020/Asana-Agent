@@ -12,7 +12,7 @@ export interface Task {
   blocker?: string
 }
 
-export type Field = 'status' | 'assignee'
+export type Field = 'status' | 'assignee' | 'blocker'
 export type ChangeRequest = { kind: 'change'; ids: string[]; field: Field; value: Status | Person; secondary?: { field: Field; value: Status | Person }; label: string }
 export type AssistantResult = { type: 'reply'; text: string; contextTaskId?: string } | { type: 'change'; request: ChangeRequest; text: string; contextTaskId: string }
 export type PreviewRow = { id: string; title: string; before: string; after: string }
@@ -39,6 +39,10 @@ export const seedTasks: Task[] = [
 
 export function canSetStatus(task: Task, status: Status): boolean {
   return status !== 'Blocked' || Boolean(task.blocker?.trim())
+}
+
+export function canSetBlockerReason(task: Task, reason: string): boolean {
+  return reason.length <= MAX_BLOCKER_LENGTH && (task.status !== 'Blocked' || Boolean(reason.trim()))
 }
 
 const stopWords = new Set(['a', 'an', 'the', 'to', 'for', 'of', 'on', 'in', 'at', 'this', 'that', 'task', 'tasks', 'status', 'please', 'can', 'you', 'me', 'my', 'with', 'and', 'all'])
@@ -221,6 +225,20 @@ export function isTaskList(value: unknown): value is Task[] {
   return new Set(value.map((task) => task.id.trim().toLowerCase())).size === value.length
 }
 
-export function updateTasks(tasks: Task[], ids: string[], field: Field, value: Status | Person): Task[] {
-  return tasks.map((task) => ids.includes(task.id) ? { ...task, [field]: value } : task)
+export function updateTasks(tasks: Task[], ids: string[], field: Field, value: string): Task[] {
+  return tasks.map((task) => {
+    if (!ids.includes(task.id)) return task
+    if (field === 'blocker') {
+      if (!canSetBlockerReason(task, value)) return task
+      const reason = value.trim()
+      if (!reason) {
+        const withoutBlocker = { ...task }
+        delete withoutBlocker.blocker
+        return withoutBlocker
+      }
+      return { ...task, blocker: reason }
+    }
+    if (field === 'status' && !canSetStatus(task, value as Status)) return task
+    return { ...task, [field]: value }
+  })
 }
