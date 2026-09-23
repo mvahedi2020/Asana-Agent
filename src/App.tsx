@@ -29,6 +29,7 @@ function formatDue(value: string) { return new Intl.DateTimeFormat('en-US', { mo
 function App() {
   const [stored] = useState(initialTasks)
   const [tasks, setTasks] = useState(stored.tasks)
+  const [reasonDrafts, setReasonDrafts] = useState<Record<string, string>>(() => Object.fromEntries(stored.tasks.map((task) => [task.id, task.blocker ?? ''])))
   const [storageWarning, setStorageWarning] = useState(stored.warning)
   const [persistEnabled, setPersistEnabled] = useState(!stored.preserve)
   const [page, setPage] = useState<Page>(currentPage)
@@ -97,12 +98,14 @@ function App() {
     if (pending.kind === 'replace') {
       const hasVisibleChanges = previewRows.length > 0
       setPersistEnabled(true); setStorageWarning(false); setUndo(hasVisibleChanges ? { tasks, label: pending.label } : null); setTasks(pending.tasks); setContextTaskId(undefined)
+      setReasonDrafts(Object.fromEntries(pending.tasks.map((task) => [task.id, task.blocker ?? ''])))
       addMessages({ role: 'Workspace guide', text: hasVisibleChanges ? `Done. ${pending.label}. You can use “Undo last change” if you need to recover it.` : `Done. ${pending.label}. No visible task values changed, so there is no new undo step.` })
     } else {
       setUndo({ tasks, label: pending.label }); setTasks((current) => {
         const primary = updateTasks(current, pending.ids, pending.field, pending.value)
         return pending.secondary ? updateTasks(primary, pending.ids, pending.secondary.field, pending.secondary.value) : primary
       })
+      if (pending.field === 'blocker') setReasonDrafts((current) => Object.fromEntries(Object.entries(current).map(([id, draft]) => [id, pending.ids.includes(id) ? pending.value.trim() : draft])))
       addMessages({ role: 'Workspace guide', text: `Done. ${pending.label}. You can use “Undo last change” if you need to recover it.` })
     }
     setPending(null)
@@ -128,6 +131,7 @@ function App() {
     if (!canSetBlockerReason(task, reason) || task.blocker?.trim() === reason.trim() || (!task.blocker && !reason.trim())) return
     setContextTaskId(task.id)
     requestMutation({ kind: 'change', ids: [task.id], field: 'blocker', value: reason.trim(), label: `Change the blocker reason for “${task.title}”` })
+    previousFocusRef.current = document.getElementById(`blocker-${task.id}`)
   }
 
   return <div className="app-shell">
@@ -146,7 +150,7 @@ function App() {
         <div className="workspace-grid">
           <section className="board-panel" aria-labelledby="board-title">
             <div className="section-heading"><div><p className="eyebrow">YOUR WORKSPACE</p><h2 id="board-title">Activation & retention</h2><p>Choose a status or owner for a task. You will review the change next.</p></div><div className="section-actions">{undo && <button className="quiet-button" onClick={() => requestMutation({ kind: 'replace', tasks: undo.tasks, label: `Undo: ${undo.label}` })}>Undo last change</button>}<button className="quiet-button" onClick={() => requestMutation({ kind: 'replace', tasks: seedTasks, label: 'Restore the original sample tasks' })}>Reset sample</button></div></div>
-            <div className="task-list">{tasks.map((task) => <TaskCard key={`${task.id}:${task.blocker ?? ''}`} task={task} onChange={directChange} onBlockerChange={proposeBlockerChange} />)}</div>
+            <div className="task-list">{tasks.map((task) => <TaskCard key={task.id} task={task} reasonDraft={reasonDrafts[task.id] ?? task.blocker ?? ''} onReasonDraft={(value) => setReasonDrafts((current) => ({ ...current, [task.id]: value }))} onChange={directChange} onBlockerChange={proposeBlockerChange} />)}</div>
             <div className="bulk-row"><div><span>Ready to wrap up?</span><p>Review every affected task before confirming a group change.</p></div><button onClick={() => runQuery('Complete all tasks in review')} disabled={!tasks.some((task) => task.status === 'In review')}>Complete tasks in review</button></div>
           </section>
           <aside className="agent-panel" aria-labelledby="agent-title">
@@ -167,10 +171,9 @@ function App() {
   </div>
 }
 
-function TaskCard({ task, onChange, onBlockerChange }: { task: Task; onChange: (task: Task, field: 'status' | 'assignee', value: string) => void; onBlockerChange: (task: Task, reason: string) => void }) {
-  const [reasonDraft, setReasonDraft] = useState(task.blocker ?? '')
+function TaskCard({ task, reasonDraft, onReasonDraft, onChange, onBlockerChange }: { task: Task; reasonDraft: string; onReasonDraft: (value: string) => void; onChange: (task: Task, field: 'status' | 'assignee', value: string) => void; onBlockerChange: (task: Task, reason: string) => void }) {
   const reasonChanged = reasonDraft.trim() !== (task.blocker?.trim() ?? '')
-  return <article className={`task-card status-${task.status.toLowerCase().replaceAll(' ', '-')}`}><div className="task-main"><div className="task-topline"><span className="task-id">{task.id}</span><span className="project-tag">{task.project}</span></div><h3>{task.title}</h3><p>{task.priority} priority · Due <time dateTime={task.due}>{formatDue(task.due)}</time></p>{task.blocker && <p className="blocker-note"><b>{task.status === 'Blocked' ? 'Blocked' : 'Recorded blocker reason'}:</b> {task.blocker}</p>}</div><div className="task-controls"><label>Status<select aria-label={`Status for ${task.title}`} value={task.status} onChange={(event) => onChange(task, 'status', event.target.value)}>{statuses.map((status) => <option value={status} key={status} disabled={!canSetStatus(task, status)}>{!canSetStatus(task, status) ? 'Blocked — reason required' : status}</option>)}</select></label><label>Owner<select aria-label={`Owner for ${task.title}`} value={task.assignee} onChange={(event) => onChange(task, 'assignee', event.target.value)}>{people.map((person) => <option value={person} key={person}>{person}</option>)}</select></label><div className="blocker-editor"><label htmlFor={`blocker-${task.id}`}>Blocker reason</label><input id={`blocker-${task.id}`} aria-label={`Blocker reason for ${task.title}`} value={reasonDraft} maxLength={MAX_BLOCKER_LENGTH} onChange={(event) => setReasonDraft(event.target.value)} placeholder="Add a reason before Blocked"/><button type="button" disabled={!reasonChanged || !canSetBlockerReason(task, reasonDraft)} onClick={() => onBlockerChange(task, reasonDraft)} aria-label={`Review blocker reason for ${task.title}`}>Review reason</button></div></div></article>
+  return <article className={`task-card status-${task.status.toLowerCase().replaceAll(' ', '-')}`}><div className="task-main"><div className="task-topline"><span className="task-id">{task.id}</span><span className="project-tag">{task.project}</span></div><h3>{task.title}</h3><p>{task.priority} priority · Due <time dateTime={task.due}>{formatDue(task.due)}</time></p>{task.blocker && <p className="blocker-note"><b>{task.status === 'Blocked' ? 'Blocked' : 'Recorded blocker reason'}:</b> {task.blocker}</p>}</div><div className="task-controls"><label>Status<select aria-label={`Status for ${task.title}`} value={task.status} onChange={(event) => onChange(task, 'status', event.target.value)}>{statuses.map((status) => <option value={status} key={status} disabled={!canSetStatus(task, status)}>{!canSetStatus(task, status) ? 'Blocked — reason required' : status}</option>)}</select></label><label>Owner<select aria-label={`Owner for ${task.title}`} value={task.assignee} onChange={(event) => onChange(task, 'assignee', event.target.value)}>{people.map((person) => <option value={person} key={person}>{person}</option>)}</select></label><div className="blocker-editor"><label htmlFor={`blocker-${task.id}`}>Blocker reason</label><input id={`blocker-${task.id}`} aria-label={`Blocker reason for ${task.title}`} value={reasonDraft} maxLength={MAX_BLOCKER_LENGTH} onChange={(event) => onReasonDraft(event.target.value)} placeholder="Add a reason before Blocked"/><button type="button" disabled={!reasonChanged || !canSetBlockerReason(task, reasonDraft)} onClick={() => onBlockerChange(task, reasonDraft)} aria-label={`Review blocker reason for ${task.title}`}>Review reason</button></div></div></article>
 }
 
 function Briefing({ tasks, onRun }: { tasks: Task[]; onRun: (query: string) => void }) {

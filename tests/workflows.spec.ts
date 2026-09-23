@@ -130,6 +130,7 @@ test('reviews a blocker reason before making Blocked available', async ({ page }
   expect(await status.locator('option[value="Blocked"]').evaluate((option: HTMLOptionElement) => option.disabled)).toBe(true)
   await review.click()
   await dialog.getByRole('button', { name: 'Confirm change' }).click()
+  await expect(reason).toBeFocused()
   expect(await status.locator('option[value="Blocked"]').evaluate((option: HTMLOptionElement) => option.disabled)).toBe(false)
   await page.reload()
   await expect(reason).toHaveValue('Waiting on legal approval')
