@@ -11,7 +11,7 @@
 ## Product principles and scope
 
 1. **Ground the conversation in visible records.** Responses use the task data already shown in the workspace and lead with readable task titles.
-2. **Make changes reviewable.** A status, owner, bulk, reset, or undo operation must show its affected records and before-and-after values, then require confirmation.
+2. **Make changes reviewable.** A status, owner, blocker reason, bulk, reset, or undo operation must show its affected records and before-and-after values, then require confirmation.
 3. **Prefer safe uncertainty.** The workspace asks a clarifying question for an unclear task and treats negation as a reason not to prepare a change.
 4. **Keep the claim bounded.** The sample uses deterministic local handling and fictional Northstar data; it does not imply an Asana connection or external AI capability.
 
@@ -22,7 +22,7 @@ The first release favors clarity and recoverability over broad automation. It ex
 | Behavior | Enforced now | Recommended product practice |
 |---|---|---|
 | Read requests | Grounded replies use visible fictional tasks and do not open a change preview. | Check the named task and sample-date boundary before acting on a reply. |
-| Task changes | Supported status and owner changes create a preview with title and before-and-after values. | Treat the preview as the decision point, not the conversation message. |
+| Task changes | Supported status, owner, and blocker-reason changes create a preview with title and before-and-after values. | Treat the preview as the decision point, not the conversation message. |
 | Ambiguity and negation | Multiple or missing matches prompt for a task; negated changes create no proposal. | Resolve ambiguity explicitly rather than rephrasing it as a guessed update. |
 | Bulk, reset, and Undo | Every changed, added, or removed task is previewed and requires confirm or cancel. An unchanged reset creates no empty Undo step. | Review the displayed scope before confirmation. |
 | Local persistence | Confirmed valid sample state persists where browser storage works; oversized or incompatible saved boards remain untouched until explicit reset. | Do not infer collaboration, audit history, or a connected system. |
@@ -43,6 +43,7 @@ The first release favors clarity and recoverability over broad automation. It ex
 11. Clear single-task conversational context when the transcript is cleared or a reset/undo replaces the board. Replacement previews list only records or fields that will change; if no visible values differ, the review says why confirmation may still matter for incompatible saved data.
 12. Apply the same Blocked eligibility rule in conversation interpretation, direct controls, and defensive action handling. A disabled selector must not be the only enforcement point.
 13. State the number of affected tasks in every nonempty review and label each value as **Before** or **After**. Associate the dialog description, scope, and local-data boundary with the dialog for assistive technology.
+14. Let a person edit a blocker reason on a task card within the same review flow. Trim a confirmed reason; allow removing it only when the task is not Blocked. A reason on an In progress task remains visible as recorded context, without claiming that the task is currently blocked. The guide directs reason-editing language to this explicit control rather than pretending to parse the proposed reason.
 
 ## Non-goals
 
@@ -66,7 +67,7 @@ Status, owner, and priority must match the visible supported vocabularies, and d
 
 Every supplied capability example works as written. A read request does not open a change preview. A negated change does not prepare an opposite update. A change never applies before confirmation, including bulk, reset, and undo. Task-title replies lead with readable titles; change previews pair those titles with stable task codes. A pronoun can reuse the immediately established single-task context, but an intervening board-wide answer expires it. Saved state survives reload when storage is available, and an invalid saved state does not crash or get overwritten without a confirmed reset.
 
-A request to mark NTH-104 Blocked is rejected because that fixture has no blocker reason; the direct selector communicates the same constraint. Clearing chat or confirming a board replacement makes a later “Mark that done” ask for a task again. Resetting an unchanged valid board shows no task-difference rows and creates no Undo control, while still explaining that a confirmed reset is the explicit recovery action for incompatible saved data. A saved board with a renamed task, changed due date, added record, or missing fixture record exposes each of those differences before reset.
+A request to mark NTH-104 Blocked is rejected because that fixture has no blocker reason; the direct selector communicates the same constraint. Entering a reason such as “Waiting on legal approval” creates a Before/After preview; only after confirmation does Blocked become available. Cancelling keeps the prior reason and status, and reviewed Undo can restore the prior reason. Clearing chat or confirming a board replacement makes a later “Mark that done” ask for a task again. Resetting an unchanged valid board shows no task-difference rows and creates no Undo control, while still explaining that a confirmed reset is the explicit recovery action for incompatible saved data. A saved board with a renamed task, changed due date, added record, or missing fixture record exposes each of those differences before reset.
 
 ## Concrete Northstar acceptance examples
 
