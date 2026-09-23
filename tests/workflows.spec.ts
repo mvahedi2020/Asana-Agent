@@ -138,6 +138,24 @@ test('reviews a blocker reason before making Blocked available', async ({ page }
   await expect(status).toHaveValue('Blocked')
 })
 
+test('protects a blocked reason and reviews reason undo', async ({ page }) => {
+  const reason = page.getByRole('textbox', { name: 'Blocker reason for Instrument workspace-created event' })
+  const review = page.getByRole('button', { name: 'Review blocker reason for Instrument workspace-created event' })
+  await reason.fill('')
+  await expect(review).toBeDisabled()
+  await reason.fill('Waiting on a revised event schema')
+  await review.click()
+  await expect(page.getByRole('dialog')).toContainText('Waiting on event schema approval')
+  await page.getByRole('dialog').getByRole('button', { name: 'Confirm change' }).click()
+  await expect(reason).toHaveValue('Waiting on a revised event schema')
+  await page.getByRole('button', { name: 'Undo last change' }).click()
+  await expect(page.getByRole('dialog')).toContainText('Waiting on event schema approval')
+  await page.getByRole('dialog').getByRole('button', { name: 'Confirm change' }).click()
+  await expect(reason).toHaveValue('Waiting on event schema approval')
+  await page.reload()
+  await expect(reason).toHaveValue('Waiting on event schema approval')
+})
+
 test('keeps an unambiguous combined request together in one preview and undo', async ({ page }) => {
   const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
   await input.fill('Put the review trial nurture copy task in progress and assign it to Jon')
