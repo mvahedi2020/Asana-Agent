@@ -13,7 +13,7 @@ export interface Task {
 }
 
 export type Field = 'status' | 'assignee' | 'blocker'
-export type ChangeRequest = { kind: 'change'; ids: string[]; field: Field; value: Status | Person; secondary?: { field: Field; value: Status | Person }; label: string }
+export type ChangeRequest = { kind: 'change'; ids: string[]; field: Field; value: string; secondary?: { field: Field; value: string }; label: string }
 export type AssistantResult = { type: 'reply'; text: string; contextTaskId?: string } | { type: 'change'; request: ChangeRequest; text: string; contextTaskId: string }
 export type PreviewRow = { id: string; title: string; before: string; after: string }
 

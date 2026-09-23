@@ -116,6 +116,28 @@ test('makes direct status and owner controls explicit, reviewable, and undoable'
   await expect(owner).toHaveValue('Jon Bell')
 })
 
+test('reviews a blocker reason before making Blocked available', async ({ page }) => {
+  const reason = page.getByRole('textbox', { name: 'Blocker reason for Finalize onboarding checklist' })
+  const status = page.getByLabel('Status for Finalize onboarding checklist')
+  const review = page.getByRole('button', { name: 'Review blocker reason for Finalize onboarding checklist' })
+  expect(await status.locator('option[value="Blocked"]').evaluate((option: HTMLOptionElement) => option.disabled)).toBe(true)
+  await reason.fill('Waiting on legal approval')
+  await review.click()
+  const dialog = page.getByRole('dialog')
+  await expect(dialog).toContainText('Blocker reason: None')
+  await expect(dialog).toContainText('Blocker reason: Waiting on legal approval')
+  await dialog.getByRole('button', { name: 'Cancel' }).click()
+  expect(await status.locator('option[value="Blocked"]').evaluate((option: HTMLOptionElement) => option.disabled)).toBe(true)
+  await review.click()
+  await dialog.getByRole('button', { name: 'Confirm change' }).click()
+  expect(await status.locator('option[value="Blocked"]').evaluate((option: HTMLOptionElement) => option.disabled)).toBe(false)
+  await page.reload()
+  await expect(reason).toHaveValue('Waiting on legal approval')
+  await status.selectOption('Blocked')
+  await page.getByRole('dialog').getByRole('button', { name: 'Confirm change' }).click()
+  await expect(status).toHaveValue('Blocked')
+})
+
 test('keeps an unambiguous combined request together in one preview and undo', async ({ page }) => {
   const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
   await input.fill('Put the review trial nurture copy task in progress and assign it to Jon')
