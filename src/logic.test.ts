@@ -60,6 +60,15 @@ describe('plain-language workspace guide', () => {
     expect(canSetBlockerReason(seedTasks[0], 'x'.repeat(MAX_BLOCKER_LENGTH + 1))).toBe(false)
   })
 
+  it('routes reason-edit requests to the explicit reviewed control', () => {
+    for (const request of ['Set blocker reason for NTH-104 to legal approval', 'Mark NTH-104 blocked because legal approval is pending']) {
+      const result = interpretRequest(request, seedTasks)
+      expect(result.type).toBe('reply')
+      expect(result.text).toContain('Blocker reason control')
+      expect(result.text).toContain('no change has been prepared')
+    }
+  })
+
   it('accepts a first name in an owner follow-up', () => {
     const first = interpretRequest('When is Review trial nurture copy due?', seedTasks)
     const followUp = interpretRequest('Assign it to Maya', seedTasks, first.contextTaskId)

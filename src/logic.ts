@@ -154,6 +154,10 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
   const requestedStatus = statusFrom(textOutsideTaskTitles, allowStandaloneReview)
   const asksToChange = changeVerb(input) && Boolean(assignee || requestedStatus)
 
+  if (changeVerb(input) && /\b(blocker reason|blocked because|reason for (?:the )?blocker)\b/.test(lower)) {
+    const target = directMatches.length === 1 ? ` for “${directMatches[0].title}”` : ''
+    return { type: 'reply', text: `Use the Blocker reason control${target} to prepare an exact before-and-after review. I cannot safely extract and apply a reason from this request, and no change has been prepared.`, contextTaskId: directMatches.length === 1 ? directMatches[0].id : undefined }
+  }
   if (/\b(do not|don't|dont|not)\b/.test(lower) && asksToChange) return { type: 'reply', text: 'I will not prepare that change. If you want to make an update, tell me the task, the status or owner you want, and I will show it for review first.' }
   if (/\b(all|every)\b.*\b(review|in review)\b.*\b(done|complete|finished)\b|\b(done|complete|finished)\b.*\b(all|every)\b.*\b(review|in review)\b/.test(lower)) {
     const inReview = tasks.filter((task) => task.status === 'In review')
