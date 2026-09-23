@@ -189,7 +189,8 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
 
   if (directMatches.length === 1 && /\b(when|due|details|tell me about|show)\b/.test(lower)) {
     const task = directMatches[0]
-    return { type: 'reply', text: `“${task.title}” is ${task.status.toLowerCase()}, owned by ${task.assignee}, and due ${date(task.due)}${task.blocker ? `. It is blocked because ${task.blocker.toLowerCase()}` : ''}.`, contextTaskId: task.id }
+    const blockerContext = task.blocker ? task.status === 'Blocked' ? `. It is blocked because ${task.blocker.toLowerCase()}` : `. A blocker reason remains recorded: ${task.blocker}` : ''
+    return { type: 'reply', text: `“${task.title}” is ${task.status.toLowerCase()}, owned by ${task.assignee}, and due ${date(task.due)}${blockerContext}.`, contextTaskId: task.id }
   }
   if (directMatches.length > 1 && /\b(when|due|details|show)\b/.test(lower)) return { type: 'reply', text: `I found several tasks: ${names(directMatches)}. Please tell me which one you mean.` }
   if (/\b(blocker|blocked|stuck|risk)\b/.test(lower)) {

@@ -132,6 +132,14 @@ describe('plain-language workspace guide', () => {
     expect(interpretRequest('When is NTH-104 due?', seedTasks).text).toContain('Sep 8')
   })
 
+  it('distinguishes a retained blocker reason from a current Blocked status', () => {
+    const unblocked = updateTasks(seedTasks, ['NTH-108'], 'status', 'In progress')
+    const response = interpretRequest('When is NTH-108 due?', unblocked).text
+    expect(response).toContain('is in progress')
+    expect(response).toContain('A blocker reason remains recorded')
+    expect(response).not.toContain('It is blocked because')
+  })
+
   it('uses one fixed weekly horizon for the workspace and assistant', () => {
     expect(tasksDueThisSampleWeek(seedTasks).map((task) => task.id)).toEqual(['NTH-119', 'NTH-104', 'NTH-108', 'NTH-112', 'NTH-115'])
     expect(interpretRequest('What is due this week?', seedTasks).text).toContain('Due by Sep 14')
