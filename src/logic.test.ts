@@ -74,6 +74,15 @@ describe('plain-language workspace guide', () => {
     }
   })
 
+  it('treats start and completion timing questions as reads', () => {
+    for (const request of ['When does NTH-104 start?', 'When will Finalize onboarding checklist finish?']) {
+      const result = interpretRequest(request, seedTasks)
+      expect(result.type).toBe('reply')
+      expect(result.text).toContain('no start or completion timestamp')
+      expect(result.text).toContain('due date of Sep 8')
+    }
+  })
+
   it('accepts a first name in an owner follow-up', () => {
     const first = interpretRequest('When is Review trial nurture copy due?', seedTasks)
     const followUp = interpretRequest('Assign it to Maya', seedTasks, first.contextTaskId)

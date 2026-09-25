@@ -36,6 +36,14 @@ test('supports a grounded conversational follow-up and asks before changing', as
   await expect(page.getByLabel('Status for Validate admin invite flow')).toHaveValue('Planned')
 })
 
+test('answers a completion-time question without preparing a status update', async ({ page }) => {
+  await page.getByRole('textbox', { name: 'Ask about the sample work' }).fill('When will Finalize onboarding checklist finish?')
+  await page.getByRole('button', { name: 'Send' }).click()
+  await expect(page.getByText(/no start or completion timestamp to report/)).toBeVisible()
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await expect(page.getByLabel('Status for Finalize onboarding checklist')).toHaveValue('In progress')
+})
+
 test('expires task context after a board-wide answer', async ({ page }) => {
   const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
   await input.fill('When is Validate admin invite flow due?')

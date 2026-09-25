@@ -154,6 +154,9 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
   const requestedStatus = statusFrom(textOutsideTaskTitles, allowStandaloneReview)
   const asksToChange = changeVerb(input) && Boolean(assignee || requestedStatus)
 
+  if (directMatches.length === 1 && /\b(when|what time)\b/.test(lower) && /\b(start|finish|finished|complete|completed)\b/.test(lower)) {
+    return { type: 'reply', text: `“${directMatches[0].title}” has a due date of ${date(directMatches[0].due)} in this sample. There is no start or completion timestamp to report; no change has been prepared.`, contextTaskId: directMatches[0].id }
+  }
   if (changeVerb(input) && /\b(blocker reason|blocked because|reason for (?:the )?blocker)\b/.test(lower)) {
     const target = directMatches.length === 1 ? ` for “${directMatches[0].title}”` : ''
     return { type: 'reply', text: `Use the Blocker reason control${target} to prepare an exact before-and-after review. I cannot safely extract and apply a reason from this request, and no change has been prepared.`, contextTaskId: directMatches.length === 1 ? directMatches[0].id : undefined }
