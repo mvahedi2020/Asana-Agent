@@ -32,6 +32,7 @@ The first release favors clarity and recoverability over broad automation. It ex
 
 1. Show fictional tasks with a title, task code, project, status, owner, due date, priority, and blocker when relevant.
 2. Accept ordinary requests for blocked work, due dates, task details, owner work, summaries, and weekly briefings.
+   Questions about when work starts or finishes are read-only: report the known due date and explain that this sample has no start or completion timestamp. They must never prepare a status change merely because they contain “start” or “finish.”
 3. Prepare status changes from a task title or code and familiar words such as done, in progress, blocked, in review, planned, and reopen.
 4. Prepare owner changes from a task title or code and one of the visible owner names.
 5. Let people choose a status or owner directly from each task card, using the same review flow as the conversation.
