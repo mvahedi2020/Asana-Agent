@@ -112,6 +112,14 @@ describe('plain-language workspace guide', () => {
     if (result.type === 'change') expect(result.request.ids).toEqual(['NTH.104'])
   })
 
+  it('matches a saved task code that ends in punctuation without matching a longer code', () => {
+    const punctuated = { ...seedTasks[0], id: 'NTH.104?' }
+    const longer = { ...seedTasks[1], id: 'NTH.104?5' }
+    const result = interpretRequest('Mark NTH.104? done', [punctuated, longer])
+    expect(result.type).toBe('change')
+    if (result.type === 'change') expect(result.request.ids).toEqual(['NTH.104?'])
+  })
+
   it('treats reads and negated changes as safe replies', () => {
     expect(interpretRequest('Show blocked tasks', seedTasks).type).toBe('reply')
     expect(interpretRequest('Do not mark Finalize onboarding checklist done', seedTasks).type).toBe('reply')

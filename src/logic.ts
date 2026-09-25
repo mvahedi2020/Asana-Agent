@@ -55,7 +55,7 @@ const boundedText = (value: unknown, maximum: number): value is string => nonEmp
 
 export function findTasks(input: string, tasks: Task[]): Task[] {
   const lower = input.toLowerCase()
-  const byId = tasks.filter((task) => new RegExp(`\\b${escapeRegExp(task.id.toLowerCase())}\\b`, 'i').test(lower))
+  const byId = tasks.filter((task) => new RegExp(`(?:^|[^a-z0-9])${escapeRegExp(task.id.toLowerCase())}(?=$|[^a-z0-9])`, 'i').test(lower))
   if (byId.length) return byId
   const exactTitles = tasks.filter((task) => quoted(input).some((title) => task.title.toLowerCase().includes(title) || title.includes(task.title.toLowerCase())))
   if (exactTitles.length) return exactTitles
