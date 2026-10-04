@@ -69,6 +69,7 @@ test('clears hidden task context with the conversation', async ({ page }) => {
 })
 
 test('bounds the local transcript while retaining the latest exchange', async ({ page }) => {
+  await page.evaluate(() => { Date.now = () => 1800000000000; Math.random = () => 0.5 })
   const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
   for (let index = 1; index <= 21; index += 1) {
     await input.fill(`Book a flight request ${index}`)

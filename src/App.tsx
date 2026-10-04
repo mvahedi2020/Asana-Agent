@@ -34,6 +34,7 @@ function App() {
   const [persistEnabled, setPersistEnabled] = useState(!stored.preserve)
   const [page, setPage] = useState<Page>(currentPage)
   const [messages, setMessages] = useState<Message[]>([{ id: 1, role: 'Workspace guide', text: 'Hi — I can help you understand this sample board and safely prepare a task change. Tell me what you want to do in your own words.' }])
+  const messageSequence = useRef(2)
   const [input, setInput] = useState('')
   const [pending, setPending] = useState<Pending | null>(null)
   const [undo, setUndo] = useState<Snapshot | null>(null)
@@ -85,7 +86,8 @@ function App() {
   }
 
   function addMessages(...entries: Omit<Message, 'id'>[]) {
-    setMessages((current) => [...current, ...entries.map((entry) => ({ ...entry, id: Date.now() + Math.random() }))].slice(-MAX_TRANSCRIPT_MESSAGES))
+    const additions = entries.map((entry) => ({ ...entry, id: messageSequence.current++ }))
+    setMessages((current) => [...current, ...additions].slice(-MAX_TRANSCRIPT_MESSAGES))
   }
 
   function clearConversation() {
