@@ -245,3 +245,15 @@ for (const width of [320,1280]) {
     await expect(input).toHaveValue('');
   });
 }
+
+for (const width of [320,390]) {
+  test(`keeps blocker reason editable without overlapping its action at ${width}px`,async({page})=>{
+    await page.setViewportSize({width,height:844});
+    const editor=page.locator('.blocker-editor').first();const input=editor.locator('input');const action=editor.getByRole('button');
+    await input.scrollIntoViewIfNeeded();const group=await editor.boundingBox();const field=await input.boundingBox();const button=await action.boundingBox();
+    expect(field!.width).toBeGreaterThan(group!.width*0.8);expect(button!.y).toBeGreaterThanOrEqual(field!.y+field!.height);
+    await input.fill('Waiting for agreed acceptance criteria.');await action.click();
+    await expect(page.getByRole('dialog',{name:'Review this change'})).toContainText('Waiting for agreed acceptance criteria.');
+    await page.getByRole('button',{name:'Cancel',exact:true}).click();
+  });
+}

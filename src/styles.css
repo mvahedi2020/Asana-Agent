@@ -27,3 +27,7 @@ footer { display: flex; justify-content: space-between; gap: 18px; padding: 21px
 .composer textarea { grid-column: 1; grid-row: 1; }
 .composer button { grid-column: 2; grid-row: 1; }
 .composer #request-limit { grid-column: 1 / -1; grid-row: 2; color: var(--muted); }
+
+/* A blocker explanation needs the full controls width, with its review action below on narrow screens. */
+.blocker-editor { grid-column: 1 / -1; }
+@media (max-width: 480px) { .blocker-editor { grid-template-columns: 1fr; } .blocker-editor button { justify-self: start; } }
