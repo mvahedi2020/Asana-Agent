@@ -229,3 +229,19 @@ test('renders the complete desktop workspace with its conversation controls', as
   expect(await page.getByLabel('Status for Instrument workspace-created event').locator('option[value="Blocked"]').evaluate((option: HTMLOptionElement) => option.disabled)).toBe(false)
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
 })
+
+for (const width of [320,1280]) {
+  test(`keeps a readable assistant composer at ${width}px`,async({page})=>{
+    await page.setViewportSize({width,height:844});
+    const input=page.getByRole('textbox',{name:'Ask about the sample work'});
+    await input.scrollIntoViewIfNeeded();await expect(input).toBeVisible();
+    const composer=await page.locator('.composer').boundingBox();const field=await input.boundingBox();const help=await page.locator('#request-limit').boundingBox();const send=await page.getByRole('button',{name:'Send',exact:true}).boundingBox();
+    expect(composer).not.toBeNull();expect(field).not.toBeNull();expect(help).not.toBeNull();expect(send).not.toBeNull();
+    expect(field!.width).toBeGreaterThan(composer!.width*0.55);
+    expect(help!.y).toBeGreaterThanOrEqual(field!.y+field!.height);
+    expect(send!.x).toBeGreaterThanOrEqual(field!.x+field!.width);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    await input.fill('What is blocked?');await page.getByRole('button',{name:'Send',exact:true}).click();
+    await expect(input).toHaveValue('');
+  });
+}
