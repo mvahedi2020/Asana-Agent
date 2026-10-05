@@ -279,7 +279,7 @@ test('keeps bulk questions read-only while a polite bulk command still needs rev
 test('keeps single-task reads and conditional questions separate from explicit commands', async ({ page }) => {
   const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
   const before = await page.evaluate(() => localStorage.getItem('northstar.asana-agent.v1'))
-  for (const request of ['Is NTH-104 complete?', 'Will NTH-104 complete?', 'Please show NTH-104 complete', 'Show NTH-104 complete', 'Can you please show NTH-104 complete?', 'Who will assign NTH-104 to Jon Bell?', 'What happens if I complete NTH-104?', 'Complete NTH-104 if Jon Bell approves']) {
+  for (const request of ['NTH-104 is complete?', 'Please, is NTH-104 complete?', 'I wonder whether NTH-104 is complete', 'Is NTH-104 complete?', 'Will NTH-104 complete?', 'Please show NTH-104 complete', 'Show NTH-104 complete', 'Can you please show NTH-104 complete?', 'Who will assign NTH-104 to Jon Bell?', 'What happens if I complete NTH-104?', 'Complete NTH-104 if Jon Bell approves']) {
     await input.fill(request)
     await page.getByRole('button', { name: 'Send', exact: true }).click()
     await expect(page.getByRole('dialog')).toHaveCount(0)

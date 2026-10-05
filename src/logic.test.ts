@@ -219,7 +219,7 @@ describe('bulk read and action intent', () => {
 
 describe('single task read intent', () => {
   it('answers completion, status and owner questions without preparing changes', () => {
-    for (const input of ['Is NTH-104 complete?', 'Will NTH-104 complete?', 'Should I complete NTH-104?', 'Please show NTH-104 complete', 'Has NTH-104 completed?', 'Is NTH-104 in progress?', 'Who should complete NTH-104?', 'Show NTH-104 complete', 'Can you please show NTH-104 complete?', 'Who will assign NTH-104 to Jon Bell?', 'Is that complete?']) {
+    for (const input of ['Give me NTH-104 status and whether it is complete', 'NTH-104 is complete?', 'Please, is NTH-104 complete?', 'I wonder whether NTH-104 is complete', 'Is NTH-104 complete?', 'Will NTH-104 complete?', 'Should I complete NTH-104?', 'Please show NTH-104 complete', 'Has NTH-104 completed?', 'Is NTH-104 in progress?', 'Who should complete NTH-104?', 'Show NTH-104 complete', 'Can you please show NTH-104 complete?', 'Who will assign NTH-104 to Jon Bell?', 'Is that complete?']) {
       const result = interpretRequest(input, seedTasks, 'NTH-104')
       expect(result.type, input).toBe('reply')
       expect(result.text, input).toContain('in progress')
@@ -228,7 +228,7 @@ describe('single task read intent', () => {
     }
   })
   it('keeps explicit polite changes reviewable and negated or conditional requests safe', () => {
-    for (const input of ['Please mark NTH-104 complete', 'Could you please mark NTH-104 complete?', 'Can you assign NTH-104 to Jon Bell?', 'Would you please set NTH-104 in review?']) {
+    for (const input of ['Please, mark NTH-104 complete', 'Could you please, mark NTH-104 complete?', 'Please mark NTH-104 complete', 'Could you please mark NTH-104 complete?', 'Can you assign NTH-104 to Jon Bell?', 'Would you please set NTH-104 in review?']) {
       expect(interpretRequest(input, seedTasks).type, input).toBe('change')
     }
     for (const input of ['Do not mark NTH-104 complete', 'What happens if I complete NTH-104?', 'Complete NTH-104 if Jon Bell approves', 'Can you mark NTH-104 complete unless it is blocked?']) {

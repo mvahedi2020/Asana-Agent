@@ -152,11 +152,12 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
   const textOutsideTaskTitles = tasks.reduce((text, task) => text.replace(new RegExp(escapeRegExp(task.title), 'ig'), ''), input)
   const allowStandaloneReview = !directMatches.some((task) => /\breview\b/i.test(task.title))
   const requestedStatus = statusFrom(textOutsideTaskTitles, allowStandaloneReview)
-  const commandIntent = /^\s*(?:(?:can|could|would|will)\s+you\s+)?(?:please\s+)?(?:assign|give|make|set|change|move|mark|put|update|reopen|resume|finish|complete|close|start)\b/.test(lower)
-  const readIntent = /^\s*(?:(?:can|could|would|will)\s+you\s+)?(?:please\s+)?(?:show|list|tell|explain|describe|check)\b/.test(lower)
-    || !commandIntent && /^\s*(?:is|are|was|were|has|have|had|does|do|did|what|when|where|who|why|how|can|could|would|will|should|may|might)\b/.test(lower)
+  const request = lower.trim().replace(/^please\s*[,;:]?\s+/, '').replace(/^(?:can|could|would|will)\s+you\s+(?:please\s*[,;:]?\s+)?/, '')
+  const commandIntent = /^(?:assign|give|make|set|change|move|mark|put|update|reopen|resume|finish|complete|close|start)\b/.test(request) && !/^give\s+me\b/.test(request)
+  const readIntent = /^(?:show|list|tell|explain|describe|check|give me)\b/.test(request)
+    || !commandIntent && (/^(?:is|are|was|were|has|have|had|does|do|did|what|when|where|who|why|how|can|could|would|will|should|may|might|i wonder whether|i want to know)\b/.test(request) || /\?\s*$/.test(request))
   const conditional = /\b(?:if|unless|provided that)\b/.test(textOutsideTaskTitles.toLowerCase())
-  const asksToChange = !readIntent && !conditional && changeVerb(input) && Boolean(assignee || requestedStatus)
+  const asksToChange = commandIntent && !conditional && Boolean(assignee || requestedStatus)
 
   if (directMatches.length === 1 && /\b(when|what time)\b/.test(lower) && /\b(start|finish|finished|complete|completed)\b/.test(lower)) {
     return { type: 'reply', text: `“${directMatches[0].title}” has a due date of ${date(directMatches[0].due)} in this sample. There is no start or completion timestamp to report; no change has been prepared.`, contextTaskId: directMatches[0].id }
@@ -173,7 +174,7 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
     return { type: 'reply', text: `Use the Blocker reason control${target} to prepare an exact before-and-after review. I cannot safely extract and apply a reason from this request, and no change has been prepared.`, contextTaskId: directMatches.length === 1 ? directMatches[0].id : undefined }
   }
   const bulkCompletion = /\b(all|every)\b.*\b(review|in review)\b.*\b(done|complete|finished)\b|\b(done|complete|finished)\b.*\b(all|every)\b.*\b(review|in review)\b/.test(lower)
-  const bulkCommand = /^\s*(?:(?:can|could|would|will)\s+you\s+)?(?:please\s+)?(?:complete|finish|mark|make|set|move|put|update|close)\b/.test(lower)
+  const bulkCommand = /^(?:complete|finish|mark|make|set|move|put|update|close)\b/.test(request)
   if (bulkCompletion && !bulkCommand) return { type: 'reply', text: `Tasks currently in review: ${readTaskList(tasks.filter((task) => task.status === 'In review'))} This sample has due dates but no completion timestamps; no change has been prepared.` }
   if (bulkCompletion && bulkCommand) {
     const inReview = tasks.filter((task) => task.status === 'In review')
