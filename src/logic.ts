@@ -162,7 +162,10 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
     return { type: 'reply', text: `Use the Blocker reason control${target} to prepare an exact before-and-after review. I cannot safely extract and apply a reason from this request, and no change has been prepared.`, contextTaskId: directMatches.length === 1 ? directMatches[0].id : undefined }
   }
   if (/\b(do not|don't|dont|not)\b/.test(lower) && asksToChange) return { type: 'reply', text: 'I will not prepare that change. If you want to make an update, tell me the task, the status or owner you want, and I will show it for review first.' }
-  if (/\b(all|every)\b.*\b(review|in review)\b.*\b(done|complete|finished)\b|\b(done|complete|finished)\b.*\b(all|every)\b.*\b(review|in review)\b/.test(lower)) {
+  const bulkCompletion = /\b(all|every)\b.*\b(review|in review)\b.*\b(done|complete|finished)\b|\b(done|complete|finished)\b.*\b(all|every)\b.*\b(review|in review)\b/.test(lower)
+  const bulkCommand = /^\s*(?:(?:can|could|would|will)\s+you\s+)?(?:please\s+)?(?:complete|finish|mark|make|set|move|put|update|close)\b/.test(lower)
+  if (bulkCompletion && !bulkCommand) return { type: 'reply', text: `Tasks currently in review: ${readTaskList(tasks.filter((task) => task.status === 'In review'))} This sample has due dates but no completion timestamps; no change has been prepared.` }
+  if (bulkCompletion && bulkCommand) {
     const inReview = tasks.filter((task) => task.status === 'In review')
     if (!inReview.length) return { type: 'reply', text: 'There are no tasks in review right now, so there is nothing to complete.' }
     return { type: 'change', request: { kind: 'change', ids: inReview.map((task) => task.id), field: 'status', value: 'Complete', label: `Mark ${inReview.length} task${inReview.length === 1 ? '' : 's'} in review as complete` }, text: `I prepared a change for ${inReview.length} task${inReview.length === 1 ? '' : 's'} in review. Review every affected task before confirming.`, contextTaskId: inReview[0].id }

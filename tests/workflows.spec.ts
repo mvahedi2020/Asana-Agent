@@ -258,3 +258,19 @@ for (const width of [320,390]) {
     await page.getByRole('button',{name:'Cancel',exact:true}).click();
   });
 }
+
+
+test('keeps bulk questions read-only while a polite bulk command still needs review', async ({ page }) => {
+  const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
+  for (const request of ['Are all tasks in review complete?', 'When will all tasks in review be complete?', 'Show all tasks in review that are complete']) {
+    await input.fill(request)
+    await page.getByRole('button', { name: 'Send', exact: true }).click()
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await expect(page.getByLabel('Status for Review trial nurture copy')).toHaveValue('In review')
+  }
+  await input.fill('Could you please complete all tasks in review?')
+  await page.getByRole('button', { name: 'Send', exact: true }).click()
+  await expect(page.getByRole('dialog')).toContainText('NTH-112 · Review trial nurture copy')
+  await expect(page.getByLabel('Status for Review trial nurture copy')).toHaveValue('In review')
+  await page.getByRole('dialog').getByRole('button', { name: 'Cancel', exact: true }).click()
+})

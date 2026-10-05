@@ -11,6 +11,8 @@ Start each independent case from the original fictional task board. Record the f
 | Grounded read | “What is blocked?” | Identify Instrument workspace-created event (NTH-108) and Summarize churn interviews (NTH-119); no change proposal. |
 | Due-date read | “When is Validate admin invite flow due?” | Report the sample due date Sep 11 for NTH-115; do not imply live task-system access. |
 | Timing read with action word | “When will Finalize onboarding checklist finish?” | Report NTH-104's sample due date and the absence of a completion timestamp; prepare no Complete proposal. |
+| Bulk read | “Are all tasks in review complete?” or “When will all tasks in review be complete?” | Reply from the local board without a proposal; completion words alone do not establish change intent. |
+| Polite bulk proposal | “Could you please complete all tasks in review?” | Preview every currently In review task without applying it; cancellation preserves all tasks. |
 | Single proposal | “Mark Finalize onboarding checklist as done” | Preview NTH-104 from In progress to Complete; the board stays unchanged until confirmation. |
 | Combined proposal | “Put the review trial nurture copy task in progress and assign it to Jon” | One review shows NTH-112 from In review/Priya Shah to In progress/Jon Bell; cancel changes neither field. |
 | Context follow-up | Ask when NTH-115 is due, then “Mark that done” | The proposal targets NTH-115; the same pronoun without established context must ask for a task. |

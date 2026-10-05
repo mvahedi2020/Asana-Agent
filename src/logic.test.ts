@@ -198,3 +198,20 @@ describe('plain-language workspace guide', () => {
     expect(rows.find((row) => row.id === 'NTH-108')?.after).toContain('added')
   })
 })
+
+
+describe('bulk read and action intent', () => {
+  it('keeps bulk state and completion-time questions read-only', () => {
+    for (const input of ['Are all tasks in review complete?', 'When will all tasks in review be complete?', 'Show all tasks in review that are complete', 'Can you show all tasks in review that are complete?']) {
+      expect(interpretRequest(input, seedTasks).type).toBe('reply')
+    }
+  })
+  it('retains explicit and polite bulk completion commands', () => {
+    for (const input of ['Complete all tasks in review', 'Mark every task in review done', 'Please complete all tasks in review', 'Could you please complete all tasks in review?']) {
+      const result = interpretRequest(input, seedTasks)
+      expect(result.type).toBe('change')
+      if (result.type === 'change') expect(result.request.ids).toEqual(['NTH-112'])
+    }
+    expect(interpretRequest('Do not complete all tasks in review', seedTasks).type).toBe('reply')
+  })
+})
