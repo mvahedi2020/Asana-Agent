@@ -14,5 +14,5 @@ export default defineConfig({
     video: capture ? 'on' : 'retain-on-failure',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], channel: process.env.CI ? undefined : 'chrome' } }],
-  webServer: { command: 'npm run dev -- --host 127.0.0.1 --port 4174', url: 'http://127.0.0.1:4174/Asana-Agent/', reuseExistingServer: !process.env.CI },
+  webServer: { command: 'npm run build && npx vite preview --host 127.0.0.1 --port 4174 --strictPort', url: 'http://127.0.0.1:4174/Asana-Agent/', reuseExistingServer: false},
 })

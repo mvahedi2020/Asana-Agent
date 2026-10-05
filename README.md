@@ -46,3 +46,7 @@ AI tools assisted with implementation and verification. This portfolio prototype
 - [Contributing and local setup](CONTRIBUTING.md)
 
 Licensed under the [MIT License](LICENSE).
+
+## Read the product documents
+
+[Open the formatted document index](https://mvahedi2020.github.io/Asana-Agent/docs/index.html) for the case study, walkthrough, requirements, and supporting product work. Markdown files remain the source documents.
