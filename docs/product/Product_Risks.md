@@ -1,4 +1,4 @@
-# Product risks — Asana Agent
+# Product risks — Task Assistant
 
 These are prospective decision risks for the fictional prototype and any later exploration. They do not describe incidents or customer outcomes.
 

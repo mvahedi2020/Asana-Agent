@@ -1,14 +1,16 @@
-# Asana Agent — Product Management Case Study
+# Task Assistant — rules-based Product Management case study
 
 This B2B SaaS product case study explores a narrow question: can a conversational task workspace make routine coordination easier while keeping the record and any proposed change clear? I defined the user problem, safety boundaries, requirements, fictional sample data, and evaluation plan; the interactive prototype makes those choices easy to inspect.
 
-**Reviewer route:** [Decision brief](docs/product/Case_Study.md) → [sample walkthrough](docs/product/Sample%20Walkthrough.md) → [PRD and acceptance examples](docs/product/PRD.md) → [measures and validation](docs/product/Measures.md) → [product decisions](docs/product/Product_Decisions.md). You can also [see the AI evaluation approach](docs/product/AI_Evaluation.md), [try the live sample](https://mvahedi2020.github.io/Asana-Agent/), or [watch the workflow](docs/media/workflow.webm).
+**Reviewer route:** [Decision brief](docs/product/Case_Study.md) → [sample walkthrough](docs/product/Sample%20Walkthrough.md) → [PRD and acceptance examples](docs/product/PRD.md) → [measures and validation](docs/product/Measures.md) → [product decisions](docs/product/Product_Decisions.md). You can also [see the assistant evaluation approach](docs/product/AI_Evaluation.md) or [try the live sample](https://mvahedi2020.github.io/Asana-Agent/).
 
 ![A fictional Northstar workspace with task cards beside a plain-English conversation](docs/media/screenshot.png)
 
-Asana Agent is an independent product sample for a calmer way to understand and update work. A fictional product lead can ask about tasks in everyday language, then review a clear before-and-after preview before a change is made. It is not affiliated with Asana.
+Task Assistant uses predefined rules entirely in your browser. It has no AI model, server backend, or Asana connection. It is an independent product sample for a calmer way to understand and update work. A fictional product lead can ask about tasks in everyday language, then review a clear before-and-after preview before a change is made. It is not affiliated with Asana.
 
 Product tradeoff: review every proposed task change even when confirmation adds effort. The next investment depends on whether conversation improves routine coordination compared with the direct controls. See the [case study](docs/product/Case_Study.md) for the proposed comparison and investment criteria.
+
+The `Asana-Agent` repository and URL are legacy addresses retained so existing links continue to work. The current product name is **Task Assistant**.
 
 ## What you can try
 
@@ -41,7 +43,7 @@ AI tools assisted with implementation and verification. This portfolio prototype
 - [Product requirements](docs/product/PRD.md)
 - [Control matrix](docs/product/Control_Matrix.md)
 - [Validation plan](docs/product/Validation.md)
-- [AI evaluation approach](docs/product/AI_Evaluation.md)
+- [Assistant evaluation approach](docs/product/AI_Evaluation.md)
 - [Proposed measures and guardrails](docs/product/Measures.md)
 - [GTM strategy](docs/product/GTM_Strategy.md)
 - [Sprint backlog](docs/product/Sprint_Backlog.md)

@@ -1,4 +1,4 @@
-# Sample walkthrough — Asana Agent
+# Sample walkthrough — Task Assistant
 
 This public walkthrough uses the fictional Northstar board. It has no Asana connection, external AI service, or task-system account; confirmed changes stay in this browser. Start from the original fixtures: choose **Reset sample**, review the replacement preview, and confirm it. Reset replaces local browser edits.
 

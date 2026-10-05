@@ -1,4 +1,6 @@
-# Asana Agent — decision brief
+# Task Assistant — decision brief
+
+A rules-based browser demo for inspecting fictional tasks and reviewing updates. It uses predefined request patterns, with no AI model, server backend, or Asana integration.
 
 ## User and problem
 

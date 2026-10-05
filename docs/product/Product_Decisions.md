@@ -1,4 +1,4 @@
-# Product decisions — Asana Agent
+# Product decisions — Task Assistant
 
 This record explains the tradeoffs in the fictional prototype. It does not claim live usage, customer evidence, or a delivery commitment.
 

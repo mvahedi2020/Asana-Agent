@@ -4,7 +4,7 @@ This matrix describes every visible interactive control in the fictional local s
 
 | Control | What it does | Safety and recovery | Verified by |
 |---|---|---|---|
-| Asana Agent logo | Returns to the workspace | Does not change tasks | Browser navigation and visual review |
+| Task Assistant logo | Returns to the workspace | Does not change tasks | Browser navigation and visual review |
 | Workspace navigation | Opens the task workspace | Does not change tasks | Browser navigation and desktop review |
 | Weekly view navigation | Opens the local weekly summary | Summary reads the current local task state | Browser navigation and desktop review |
 | About this sample navigation | Opens the product explanation | Does not change tasks | Browser navigation and desktop review |
