@@ -8,6 +8,8 @@ This B2B SaaS product case study explores a narrow question: can a conversationa
 
 Asana Agent is an independent product sample for a calmer way to understand and update work. A fictional product lead can ask about tasks in everyday language, then review a clear before-and-after preview before a change is made. It is not affiliated with Asana.
 
+Product tradeoff: review every proposed task change even when confirmation adds effort. The next investment depends on whether conversation improves routine coordination compared with the direct controls. See the [case study](docs/product/Case_Study.md) for the proposed comparison and investment criteria.
+
 ## What you can try
 
 The sample understands these requests without requiring a task code:

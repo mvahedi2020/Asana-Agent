@@ -16,6 +16,8 @@ Confirmation adds an interaction to routine updates, ambiguity prompts can inter
 
 Technical checks establish that documented local flows ran; they do not establish human trust, usability, demand, model quality, or business impact. No participant study has occurred. The next investment is a five-participant comparison with each person’s current task workflow. Expand only if participants independently identify the affected task, distinguish a proposal from a confirmed update, and recover a deliberate change without a critical action-boundary error. [The walkthrough](Sample%20Walkthrough.md), [PRD](PRD.md), [decisions](Product_Decisions.md), and [validation plan](Validation.md) make that product case reviewable.
 
+Before connecting a real task system or model, compare the reviewed conversation with the existing direct controls. The opportunity is less coordination effort; the cost is clarification and confirmation on each change. If people complete routine updates just as well with the cards, keep the direct workflow and reduce conversational scope. A future model would need separate checks for wrong-task proposals, ambiguous language, permission boundaries and the cost of human review; this deterministic sample establishes none of those production capabilities.
+
 ## My role as Product Manager
 
 I defined the problem, prioritization and scope, workflows, fictional sample data, acceptance criteria, and evaluation plan. AI tools assisted with implementation and verification; I do not claim manual authorship of the application code.
