@@ -152,16 +152,26 @@ export function interpretRequest(input: string, tasks: Task[], contextTaskId?: s
   const textOutsideTaskTitles = tasks.reduce((text, task) => text.replace(new RegExp(escapeRegExp(task.title), 'ig'), ''), input)
   const allowStandaloneReview = !directMatches.some((task) => /\breview\b/i.test(task.title))
   const requestedStatus = statusFrom(textOutsideTaskTitles, allowStandaloneReview)
-  const asksToChange = changeVerb(input) && Boolean(assignee || requestedStatus)
+  const commandIntent = /^\s*(?:(?:can|could|would|will)\s+you\s+)?(?:please\s+)?(?:assign|give|make|set|change|move|mark|put|update|reopen|resume|finish|complete|close|start)\b/.test(lower)
+  const readIntent = /^\s*(?:(?:can|could|would|will)\s+you\s+)?(?:please\s+)?(?:show|list|tell|explain|describe|check)\b/.test(lower)
+    || !commandIntent && /^\s*(?:is|are|was|were|has|have|had|does|do|did|what|when|where|who|why|how|can|could|would|will|should|may|might)\b/.test(lower)
+  const conditional = /\b(?:if|unless|provided that)\b/.test(textOutsideTaskTitles.toLowerCase())
+  const asksToChange = !readIntent && !conditional && changeVerb(input) && Boolean(assignee || requestedStatus)
 
   if (directMatches.length === 1 && /\b(when|what time)\b/.test(lower) && /\b(start|finish|finished|complete|completed)\b/.test(lower)) {
     return { type: 'reply', text: `“${directMatches[0].title}” has a due date of ${date(directMatches[0].due)} in this sample. There is no start or completion timestamp to report; no change has been prepared.`, contextTaskId: directMatches[0].id }
+  }
+  if (/\b(do not|don't|dont|not)\b/.test(lower) && changeVerb(input) && Boolean(assignee || requestedStatus)) return { type: 'reply', text: 'I will not prepare that change. If you want to make an update, tell me the task, the status or owner you want, and I will show it for review first.' }
+  if (conditional) return { type: 'reply', text: 'This sample cannot evaluate a conditional change. Ask about the current task, or request one explicit status or owner update. No change has been prepared.' }
+  if (readIntent && matched.length === 1) {
+    const task = matched[0]
+    const blockerContext = task.blocker ? task.status === 'Blocked' ? `. It is blocked because ${task.blocker.toLowerCase()}` : `. A blocker reason remains recorded: ${task.blocker}` : ''
+    return { type: 'reply', text: `“${task.title}” is ${task.status.toLowerCase()}, owned by ${task.assignee}, and due ${date(task.due)}${blockerContext}. No change has been prepared.`, contextTaskId: task.id }
   }
   if (changeVerb(input) && /\b(blocker reason|blocked because|reason for (?:the )?blocker)\b/.test(lower)) {
     const target = directMatches.length === 1 ? ` for “${directMatches[0].title}”` : ''
     return { type: 'reply', text: `Use the Blocker reason control${target} to prepare an exact before-and-after review. I cannot safely extract and apply a reason from this request, and no change has been prepared.`, contextTaskId: directMatches.length === 1 ? directMatches[0].id : undefined }
   }
-  if (/\b(do not|don't|dont|not)\b/.test(lower) && asksToChange) return { type: 'reply', text: 'I will not prepare that change. If you want to make an update, tell me the task, the status or owner you want, and I will show it for review first.' }
   const bulkCompletion = /\b(all|every)\b.*\b(review|in review)\b.*\b(done|complete|finished)\b|\b(done|complete|finished)\b.*\b(all|every)\b.*\b(review|in review)\b/.test(lower)
   const bulkCommand = /^\s*(?:(?:can|could|would|will)\s+you\s+)?(?:please\s+)?(?:complete|finish|mark|make|set|move|put|update|close)\b/.test(lower)
   if (bulkCompletion && !bulkCommand) return { type: 'reply', text: `Tasks currently in review: ${readTaskList(tasks.filter((task) => task.status === 'In review'))} This sample has due dates but no completion timestamps; no change has been prepared.` }

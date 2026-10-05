@@ -274,3 +274,28 @@ test('keeps bulk questions read-only while a polite bulk command still needs rev
   await expect(page.getByLabel('Status for Review trial nurture copy')).toHaveValue('In review')
   await page.getByRole('dialog').getByRole('button', { name: 'Cancel', exact: true }).click()
 })
+
+
+test('keeps single-task reads and conditional questions separate from explicit commands', async ({ page }) => {
+  const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
+  const before = await page.evaluate(() => localStorage.getItem('northstar.asana-agent.v1'))
+  for (const request of ['Is NTH-104 complete?', 'Will NTH-104 complete?', 'Please show NTH-104 complete', 'Show NTH-104 complete', 'Can you please show NTH-104 complete?', 'Who will assign NTH-104 to Jon Bell?', 'What happens if I complete NTH-104?', 'Complete NTH-104 if Jon Bell approves']) {
+    await input.fill(request)
+    await page.getByRole('button', { name: 'Send', exact: true }).click()
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await expect(page.getByLabel('Status for Finalize onboarding checklist')).toHaveValue('In progress')
+    await expect(page.getByLabel('Owner for Finalize onboarding checklist')).toHaveValue('Maya Chen')
+    expect(await page.evaluate(() => localStorage.getItem('northstar.asana-agent.v1'))).toBe(before)
+  }
+  await input.fill('Could you please mark NTH-104 complete?')
+  await page.getByRole('button', { name: 'Send', exact: true }).click()
+  await expect(page.getByRole('dialog')).toContainText('Status: In progress')
+  await expect(page.getByRole('dialog')).toContainText('Status: Complete')
+  await page.getByRole('dialog').getByRole('button', { name: 'Cancel', exact: true }).click()
+  expect(await page.evaluate(() => localStorage.getItem('northstar.asana-agent.v1'))).toBe(before)
+  await input.fill('Can you assign NTH-104 to Jon Bell?')
+  await page.getByRole('button', { name: 'Send', exact: true }).click()
+  await expect(page.getByRole('dialog')).toContainText('Owner: Maya Chen')
+  await expect(page.getByRole('dialog')).toContainText('Owner: Jon Bell')
+  await page.getByRole('dialog').getByRole('button', { name: 'Cancel', exact: true }).click()
+})
