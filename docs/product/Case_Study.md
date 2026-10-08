@@ -1,5 +1,9 @@
 # Task Assistant — decision brief
 
+Inspect fictional tasks and review changes to their status or owner. This demo follows predefined browser rules; it has no AI model or Asana connection.
+
+**The product choice:** Keep a person in control of every proposed task change. [Try the sample](https://mvahedi2020.github.io/Asana-Agent/) · [Follow the walkthrough](Sample%20Walkthrough.md).
+
 A rules-based browser demo for inspecting fictional tasks and reviewing updates. It uses predefined request patterns, with no AI model, server backend, or Asana integration.
 
 ## User and problem

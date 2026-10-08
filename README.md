@@ -1,6 +1,8 @@
 # Task Assistant — rules-based Product Management case study
 
-This B2B SaaS product case study explores a narrow question: can a conversational task workspace make routine coordination easier while keeping the record and any proposed change clear? I defined the user problem, safety boundaries, requirements, fictional sample data, and evaluation plan; the interactive prototype makes those choices easy to inspect.
+Inspect fictional tasks and review changes to their status or owner. This demo follows predefined browser rules; it has no AI model or Asana connection. All records in this demo are fictional.
+
+**Try it:** Ask “What is blocked?”, then prepare a task update and cancel its preview before trying confirmation. [Open the demo](https://mvahedi2020.github.io/Asana-Agent/) · [Follow the walkthrough](docs/product/Sample%20Walkthrough.md).
 
 **Reviewer route:** [Decision brief](docs/product/Case_Study.md) → [sample walkthrough](docs/product/Sample%20Walkthrough.md) → [PRD and acceptance examples](docs/product/PRD.md) → [measures and validation](docs/product/Measures.md) → [product decisions](docs/product/Product_Decisions.md). You can also [see the assistant evaluation approach](docs/product/AI_Evaluation.md) or [try the live sample](https://mvahedi2020.github.io/Asana-Agent/).
 
