@@ -4,6 +4,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto('./#board')
   await page.getByRole('button', { name: 'Reset sample' }).click()
   await page.getByRole('dialog', { name: 'Review this change' }).getByRole('button', { name: 'Confirm change' }).click()
+  await expect(page.getByRole('dialog', { name: 'Review this change' })).toHaveCount(0)
 })
 
 test('understands a task title, previews the human-readable change, confirms, and persists it', async ({ page }) => {
@@ -61,7 +62,10 @@ test('clears hidden task context with the conversation', async ({ page }) => {
   const input = page.getByRole('textbox', { name: 'Ask about the sample work' })
   await input.fill('When is Validate admin invite flow due?')
   await page.getByRole('button', { name: 'Send' }).click()
+  await expect(input).toHaveValue('')
+  await expect(page.getByText(/due Sep 11/)).toBeVisible()
   await page.getByRole('button', { name: 'Clear chat' }).click()
+  await expect(page.getByText('Your conversation is clear.', { exact: true })).toBeVisible()
   await input.fill('Mark that done')
   await page.getByRole('button', { name: 'Send' }).click()
   await expect(page.getByText(/Which task should I change/)).toBeVisible()
