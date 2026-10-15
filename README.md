@@ -4,6 +4,8 @@ Inspect fictional tasks and review changes to their status or owner. This demo f
 
 **Try it:** Ask “What is blocked?”, then prepare a task update and cancel its preview before trying confirmation. [Open the demo](https://mvahedi2020.github.io/Asana-Agent/) · [Follow the walkthrough](docs/product/Sample%20Walkthrough.md).
 
+**Experience connection:** My product and program work has involved coordinating cross-functional teams, clarifying ownership and making changes understandable to the people responsible for delivery. [Read the decision to challenge](docs/product/Case_Study.md#experience-and-decision).
+
 **Reviewer route:** [Decision brief](docs/product/Case_Study.md) → [sample walkthrough](docs/product/Sample%20Walkthrough.md) → [PRD and acceptance examples](docs/product/PRD.md) → [measures and validation](docs/product/Measures.md) → [product decisions](docs/product/Product_Decisions.md). You can also [see the assistant evaluation approach](docs/product/AI_Evaluation.md) or [try the live sample](https://mvahedi2020.github.io/Asana-Agent/).
 
 ![A fictional Northstar workspace with task cards beside a plain-English conversation](docs/media/screenshot.png)

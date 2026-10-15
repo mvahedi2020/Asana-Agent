@@ -4,6 +4,12 @@ Inspect fictional tasks and review changes to their status or owner. This demo f
 
 **The product choice:** Keep a person in control of every proposed task change. [Try the sample](https://mvahedi2020.github.io/Asana-Agent/) · [Follow the walkthrough](Sample%20Walkthrough.md).
 
+## Experience and decision
+
+My product and program work has involved coordinating cross-functional teams, clarifying ownership and making changes understandable to the people responsible for delivery. This is a separate fictional portfolio exercise; its records, rules and results do not reproduce an employer system.
+
+**Decision to challenge:** Would a reviewed conversation help a delivery lead more than direct task controls? The extra confirmation is useful only if it reduces wrong-task changes without making routine coordination harder.
+
 A rules-based browser demo for inspecting fictional tasks and reviewing updates. It uses predefined request patterns, with no AI model, server backend, or Asana integration.
 
 ## User and problem
